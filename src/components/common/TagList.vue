@@ -79,9 +79,9 @@ export default {
                 if(!this.getID) {
                     const user = await getUserTags({ userid: this.getID })
                 }
+                this.loading = false
                 if(res.data.success) {
                     this.tags = res.data.tags
-                    this.loading = false
                 } else if (user.data.success) {
                     this.usertags = user.data.user.tags
                     this.checkState(res.data.tags, user.data.user.tags)
@@ -110,7 +110,6 @@ export default {
                     that.substate[index] = false
                 }
             })
-            this.loading = false
         },
         async refreshList() {
             this.loading = true

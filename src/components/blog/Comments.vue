@@ -82,12 +82,13 @@
 import  { mapGetters } from 'vuex'
 import moment from 'moment'
 import { checkComments } from '@/helper/articleHelper'
+import * as helper from '@/helper/commentHelper'
 import subcomments from './Subcomments'
 
 export default {
     mounted() {
         this.getComments()
-        this.checkComments()
+        this.checkArticleComments()
         this.getNumber()
     },
     props: [
@@ -135,15 +136,13 @@ export default {
         openLogin() {
             this.$store.dispatch('displayModal', { display: true, login: 'login' })
         },
-        getNumber() {
-            this.$http.get('/m/number', { params: { articleid: this.article } })
-                .then(res => {
-                    //console.log(res.data)
-                    this.number = res.data
-                })
-                .catch(err => {
-                    console.log(err)
-                })
+        async getNumber() {
+            try {
+                const res = await helper.getCommentsNumber(this.article)
+                this.number = res.data
+            } catch(err) {
+                console.log('error occurs')
+            }
         },
         sortState(val) {
             if(val === 'likes') {
@@ -169,12 +168,20 @@ export default {
         async sortAuthor() {
             if(this.sortAuthorState === false) {
                 try {
-                    const sortcomments = await this.$http.get('/m/authoronly', { params: { articleid: this.article, authorid: this.author } })
-                    this.comments = sortcomments.data
-                    this.sortAuthorState = true
-                    //console.log("sort ok!")
+                    const res = await helper.getAuthorComments(this.article, this.author)
+                    if(res.data.success) {
+                        this.comments = res.data.comments
+                        this.sortAuthorState = true
+                    } else {
+                        this.$notify({
+                            title: 'Warning',
+                            type: 'warning',
+                            message: 'failed to get author comments',
+                            position: 'top-left'
+                        })
+                    }
                 } catch(err) {
-                    console.log('failed to sort by author ', err)
+                    console.log(err.message)
                 }
             } else {
                 this.sortState(this.sort)
@@ -185,87 +192,96 @@ export default {
             this.showInput = true
             this.selectedSub = index
         },
-        getComments() {
-            this.$http.get('/m/comments', { params: { articleid: this.article, sort: this.sort } })
-                .then(res => {
-                    var filtered = res.data.filter(function(comment) {
+        async getComments() {
+            try {
+                const res = await helper.getComments(this.article, this.sort)
+                if(res.data.success) {
+                    let filtered = res.data.comments.filter(function(comment) {
                         return comment.first
                     })
                     this.comments = filtered
-                    console.log(res.data)
-                })
-                .catch(err => {
-                    console.log(err)
-                })
+                } else {
+                    return
+                }
+            } catch(err) {
+                console.log(err.message)
+            }
         },
-        writeComment() {
-            this.$http.post('/m/comment', { articleid: this.article, content: this.content, author: this.userid })
-                .then(res => {
-                    if(res.data.success) {
-                        this.content = ''
-                        this.$notify({
-                            title: 'Success',
-                            type: 'success',
-                            message: res.data.message,
-                            position: 'top-left'
-                        })
-                        this.getComments()
-                        this.updateArticle()
-                    } else {
-                        this.$notify({
-                            title: 'Warning',
-                            type: 'warning',
-                            message: res.data.message,
-                            position: 'top-left'
-                        })
-                    }
-                })
-                .catch(err => {
-                    console.log(err.message)
-                })
+        async writeComment() {
+            try {
+                const res = postComment(this.article, this.content, this.userid)
+                if(res.data.success) {
+                    this.content = ''
+                    this.$notify({
+                        title: 'Success',
+                        type: 'success',
+                        message: res.data.message,
+                        position: 'top-left'
+                    })
+                    this.getComments()
+                    this.updateArticle() 
+                } else {
+                    this.$notify({
+                        title: 'Warning',
+                        type: 'warning',
+                        message: res.data.message,
+                        position: 'top-left'
+                    })
+                }
+            } catch(err) {
+               console.log(err.message) 
+            }
         },
-        updateArticle() {
-            this.$http.post('/m/article',  { articleid: this.article, add: true })
-                .then(res => {
+        async updateArticle() {
+            try {
+                const res = await helper.updateRecord(this.article, true)
+                if(res.data.success) {
                     this.number = res.data.comment
-                })
-                .catch(err => {
-                    console.log(err.message)
-                })
+                }
+            } catch(err) {
+                console.log(err.message)
+            }
         },
-        addtoComment(comment) {
-            this.$http.post('/m/addtocomment', { comment: comment._id, subid: this.subid })
-                .then(res => {
-                    //console.log(res.data.success)
-                })
-                .catch(err => {
-                    console.log(err.message)
-                })
+        async addtoComment(comment) {
+            try {
+                const res = await helper.addToComment(comment._id, this.subid)
+                if(res.data.success) {
+                    return
+                } else {
+                    this.$notify({
+                        title: 'Warning',
+                        type: 'warning',
+                        message: 'comment not properly saved',
+                        position: 'top-left'
+                    })
+                }
+            } catch(err) {
+                console.log(err.message)
+            }
         },
         cancelComment() {
             this.content = '',
             this.operation = false
         },
-        writeSub(comment) {
+        async writeSub(comment) {
             const that = this
-            this.$http.post('/m/subcomment', { articleid: this.article, content: this.subcontent, author: this.userid, reply: comment.post_by._id })
-                .then(res => {
-                    if(res.data.success) {
-                        this.subcontent = ''
-                        this.showInput = false
-                        this.selectedSub = -1
-                        this.subid = res.data.new._id
-                        this.$http.get('/m/comment/' + this.subid)
-                            .then(res => {
-                                that.comments.push(res.data)
-                            })
-                        this.addtoComment(comment)
-                        this.updateArticle()
+            try {
+                const res = await helper.postSubcomment(this.article, this.subcontent, this.userid, comment.post_by._id)
+                if(res.data.success) {
+                    this.subcontent = ''
+                    this.showInput = false
+                    this.selectedSub = -1
+                    this.subid = res.data.newSub._id
+                    const sub = await helper.getComment(this.subid)
+                    if(sub.data.success) {
+                        that.comments.push(sub.data.comment)
                     }
-                })
-                .catch(err => {
-                    console.log(err)
-                })
+                    this.addtoComment(comment)
+                    this.updateArticle()
+                }
+            } catch(err) {
+                console.log(err.message)
+            }
         },
         cancelSub(comment) {
             this.subcontent = ''
@@ -277,56 +293,54 @@ export default {
             this.$router.push('/m/comment/' + this.comment_id)
         },
         /* close article comments area, only by author */
-        closeComments(state) {
+        async closeComments(state) {
             if(state) {
-                this.$http.post('/m/closecomments', { articleid: this.article, close: true })
-                    .then(res => {
-                        if(res.data.success) {
-                            this.$notify({
-                                title: 'Success',
-                                type: 'success',
-                                message: 'comments closed',
-                                position: 'top-left'
-                            })
-                            this.opencomments = false
-                        } else {
-                            this.$notify({
-                                title: 'Warning',
-                                type: 'warning',
-                                message: 'failed to close comments',
-                                position: 'top-left'
-                            })
-                        }
-                    })
-                    .catch(err => {
-                        console.log(err.message)
-                    })
+                try {
+                    const res = await helper.closeComment(this.article, true)
+                    if(res.data.success) {
+                        this.$notify({
+                            title: 'Success',
+                            type: 'success',
+                            message: 'comments closed',
+                            position: 'top-left'
+                        })
+                        this.opencomments = false
+                    } else {
+                        this.$notify({
+                            title: 'Warning',
+                            type: 'warning',
+                            message: 'failed to close comments',
+                            position: 'top-left'
+                        })
+                    }
+                } catch(err) {
+                    console.log(err.message)
+                }
             } else {
-                this.$http.post('/m/closecomments', { articleid: this.article, close: false })
-                    .then(res => {
-                        if(res.data.success) {
-                            this.$notify({
-                                title: 'Success',
-                                type: 'success',
-                                message: 'comments opened',
-                                position: 'top-left'
-                            })
-                            this.opencomments = true
-                        } else {
-                            this.$notify({
-                                title: 'Warning',
-                                type: 'warning',
-                                message: 'failed to open comments',
-                                position: 'top-left'
-                            })
-                        }
-                    })
-                    .catch(err => {
-                        console.log(err)
-                    })
+                try {
+                    const res = await helper.closeComment(this.article, false)
+                    if(res.data.success) {
+                        this.$notify({
+                            title: 'Success',
+                            type: 'success',
+                            message: 'comments closed',
+                            position: 'top-left'
+                        })
+                        this.opencomments = true
+                    } else {
+                        this.$notify({
+                            title: 'Warning',
+                            type: 'warning',
+                            message: 'failed to close comments',
+                            position: 'top-left'
+                        })
+                    }
+                } catch(err) {
+                    console.log(err.message)
+                }
             }
         },
-        async checkComments() {
+        async checkArticleComments() {
             try {
                 const res = await checkComments({ articleid: this.article })
                 if(res.data.success) {

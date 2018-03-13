@@ -44,6 +44,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { addView } from '@/helper/articleHelper'
+import { getUserComments } from '@/helper/commentHelper'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import pagination from '@/components/common/Pagination'
 import marked from '@/helper/marked.js'
@@ -99,20 +100,23 @@ export default {
 			this.pages.currentPage = pageNumber
 			this.getComments()
         },
-		getComments() {
-            this.$http({
-					method: 'get',
-					url: '/m/usercomments/' + this.user.id,
-					params: { page: this.pages.currentPage}
-				})
-                .then(res => {
+		async getComments() {
+			try {
+				const res = getUserComments(this.user.id, this.pages.currentPage)
+				if(res.data.success) {
 					this.loading = false
-					this.comments = res.data
-					console.log(this.comments)
-                })
-                .catch(err => {
-                    console.log(err)
-                })
+					this.comments = res.data.comments
+				} else {
+					this.$notify({
+						title: 'Warning',
+						type: 'warning',
+						message: 'cannot get any user comments',
+						position: 'top-left'
+					})
+				}
+			} catch(err) {
+				console.log(err.message)
+			}
 		},
 		async showDetail(article) {
             this.article_id =article._id
@@ -120,7 +124,7 @@ export default {
             try {
                 await addView(this.article_id)
             } catch(err) {
-                console.log(err)
+                console.log(err.message)
             }  
         },
 	},

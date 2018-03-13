@@ -57,6 +57,7 @@
 import { mapGetters } from 'vuex'
 import { reduce } from 'underscore'
 import { getUserTags, unsubTag, removeUser } from '@/helper/articleHelper'
+import { getUserCollections } from '@/helper/collectionHelper'
 import Box from '@/components/common/CollectionBox'
 export default {
     mounted() {
@@ -99,15 +100,16 @@ export default {
                 this.hoverindex = -1
             }
         },
-        getCollections() {
-            this.$http.post('/c/collections', { owner: this.getID })
-                .then(res => {
-                    this.collections = res.data
-                    this.count = res.data.length
-                })
-                .catch(err => {
-                    console.log(err.message)
-                })
+        async getCollections() {
+            try {
+                const res = await getUserCollections(this.getID)
+                if(res.data.success) {
+                    this.collections = res.data.collections
+                    this.count = res.data.collections.length
+                }
+            } catch(err) {
+                console.log(err.message)
+            }
         },
         newCollection() {
              if(this.getState) {

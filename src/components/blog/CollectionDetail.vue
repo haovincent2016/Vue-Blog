@@ -5,7 +5,7 @@
             <div @click="showComfirmation = false" class="close">&times;</div>
             <p class="title">Are you sure to delete this collection?</p>
             <div class="btn-group">
-                <button class="subscribe" @click="deleteCollection">Yes</button>
+                <button class="subscribe" @click="deleteCol">Yes</button>
                 <button class="delete" @click="showComfirmation = false">Cancel</button>
             </div>
         </div>
@@ -52,6 +52,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import list from './Articles'
+import * as helper from '@/helper/collectionHelper'
 import moment from 'moment'
 export default {
     mounted() {
@@ -84,84 +85,86 @@ export default {
         })
     },
     methods: {
-        saveTitle() {
+        async saveTitle() {
             if(this.newtitle == this.collection.name || this.newtitle == '') {
                 this.showInput = false
                 return
             } else {
-                this.$http.post('/c/editTitle', { collectionid: this.$route.params.id, name: this.newtitle })
-                    .then(res => {
-                        if(res.data.success) {
-                            this.$notify({
-                                title: 'Success',
-                                type: 'success',
-                                message: res.data.message,
-                                position: 'top-left'
-                            })
-                            this.showInput = false
-                            this.getDetail()
-                        } else {
-                            this.$notify({
-                                title: 'Warning',
-                                type: 'warning',
-                                message: res.data.message,
-                                position: 'top-left'
-                            })
-                        }
-                    })
-                    .catch(err => {
-                        console.log(err.message)
-                    })
+                try {
+                    const res = await helper.editTitle(this.$route.params.id, this.newtitle)
+                    if(res.data.success) {
+                        this.$notify({
+                            title: 'Success',
+                            type: 'success',
+                            message: res.data.message,
+                            position: 'top-left'
+                        })
+                        this.showInput = false
+                        this.getDetail()
+                    } else {
+                        this.$notify({
+                            title: 'Warning',
+                            type: 'warning',
+                            message: res.data.message,
+                            position: 'top-left'
+                        })
+                    }
+                } catch(err) {
+                    console.log(err.message)
+                }
             }
         },
-        saveDesc() {
+        async saveDesc() {
              if(this.newdesc == this.collection.description || this.newdesc == '') {
                 this.showDesc = false
                 return
             } else {
-                this.$http.post('/c/editDesc', { collectionid: this.$route.params.id, description: this.newdesc })
-                    .then(res => {
-                        if(res.data.success) {
-                            this.$notify({
-                                title: 'Success',
-                                type: 'success',
-                                message: res.data.message,
-                                position: 'top-left'
-                            })
-                            this.showDesc = false
-                            this.getDetail()
-                        } else {
-                            this.$notify({
-                                title: 'Warning',
-                                type: 'warning',
-                                message: res.data.message,
-                                position: 'top-left'
-                            })
-                        }
-                    })
-                    .catch(err => {
-                        console.log(err.message)
-                    })
+                try {
+                    const res = await helper.editDesc(this.$route.params.id, this.newdesc)
+                    if(res.data.success) {
+                        this.$notify({
+                            title: 'Success',
+                            type: 'success',
+                            message: res.data.message,
+                            position: 'top-left'
+                        })
+                        this.showDesc = false
+                        this.getDetail()
+                    } else {
+                        this.$notify({
+                            title: 'Warning',
+                            type: 'warning',
+                            message: res.data.message,
+                            position: 'top-left'
+                        })
+                    }
+                } catch(err) {
+                    console.log(err.message)
+                }
             }
         },
-        getDetail() {
-            this.$http.get('/c/collections/' + this.$route.params.id)
-                .then(res => {
-                    this.collection = res.data
-                    this.count = res.data.articles.length
-                    this.subscriber = res.data.subscriber.length
-                    this.newtitle = res.data.name
-                    this.newdesc = res.data.description
+        async getDetail() {
+            try {
+                const res = await helper.getCollection(this.$route.params.id)
+                if(res.data.success) {
+                    this.collection = res.data.collection
+                    this.count = res.data.collection.articles.length
+                    this.subscriber = res.data.collection.subscriber.length
+                    this.newtitle = res.data.collection.name
+                    this.newdesc = res.data.collection.description
                     if(this.login) {
                         if(this.collection.owner._id == this.userid) {
                             this.isOwner = true
                         } else {
                             this.isOwner = false
                         }
-                    }
-                })
+                    } 
+                }
+            } catch(err) {
+                console.log(err.message)
+            }
         },
-        subCollection() {
+        async subCollection() {
             if(this.isOwner) {
                 //cannot subscribe to own collection
                 this.$notify.info({
@@ -170,31 +173,33 @@ export default {
                     position: 'top-left'
                 })
             } else if (this.login) {
-                this.$http.post('/c/subscribe', { collectionid: this.$route.params.id, userid: this.userid })
-                    .then(res => {
-                        if(res.data.success) {
-                            this.substate = true
-                            this.subscriber += 1
-                            this.$notify({
-                                title: 'Success',
-                                type: 'success',
-                                message: 'you have subscribed to this collection',
-                                position: 'top-left'
-                            })
-                        } else {
-                            this.$notify({
-                                title: 'Warning',
-                                type: 'warning',
-                                message: 'sorry, please try again later',
-                                position: 'top-left'
-                            })
-                        }
-                    })
+                try {
+                    const res = await helper.subscribeCollection(this.$route.params.id, this.userid)
+                    if(res.data.success) {
+                        this.substate = true
+                        this.subscriber += 1
+                        this.$notify({
+                            title: 'Success',
+                            type: 'success',
+                            message: 'you have subscribed to this collection',
+                            position: 'top-left'
+                        })
+                    } else {
+                        this.$notify({
+                            title: 'Warning',
+                            type: 'warning',
+                            message: 'sorry, please try again later',
+                            position: 'top-left'
+                        })
+                    }
+                } catch(err) {
+                    console.log(err.message)
+                }
             } else {
                 this.$store.dispatch('displayModal', { display: true, login: 'login' })
             }
         },
-        unsubCollection() {
+        async unsubCollection() {
             if(this.isOwner) {
                 //cannot unsubscribe to own collection
                 this.$notify.info({
@@ -203,53 +208,59 @@ export default {
                     position: 'top-left'
                 })
             } else if (this.login) {
-                this.$http.post('/c/unsubscribe', { collectionid: this.$route.params.id, userid: this.userid })
-                    .then(res => {
-                        if(res.data.success) {
-                            this.substate = false
-                            this.subscriber -= 1
-                            this.$notify({
-                                title: 'Success',
-                                type: 'success',
-                                message: 'you have unsubscribed to this collection',
-                                position: 'top-left'
-                            })
-                        } else {
-                            this.$notify({
-                                title: 'Warning',
-                                type: 'warning',
-                                message: 'sorry, please try again later',
-                                position: 'top-left'
-                            })
-                        }
-                    })
+                try {
+                    const res = await helper.unsubscribeCollection(this.$route.params.id, this.userid)
+                    if(res.data.success) {
+                        this.substate = false
+                        this.subscriber -= 1
+                        this.$notify({
+                            title: 'Success',
+                            type: 'success',
+                            message: 'you have unsubscribed to this collection',
+                            position: 'top-left'
+                        })
+                    } else {
+                        this.$notify({
+                            title: 'Warning',
+                            type: 'warning',
+                            message: 'sorry, please try again later',
+                            position: 'top-left'
+                        })
+                    }
+                } catch(err) {
+                    console.log(err.message)
+                }
             } else {
                 this.$store.dispatch('displayModal', { display: true, login: 'login' })
             }
         },
-        deleteCollection() {
+        async deleteCol() {
             this.showComfirmation = false
             if(this.isOwner) {
-                this.$http.delete('/c/collections/' + this.$route.params.id)
-                    .then(res => {
-                        if(res.data.success) {
-                            this.$router.push('/mycollect')
-                            this.$notify({
-                                title: 'Success',
-                                type: 'success',
-                                message: 'you have deleted this collection',
-                                position: 'top-left'
-                            })
-                        } else {
-                            this.$notify({
-                                title: 'Warning',
-                                type: 'warning',
-                                message: 'sorry, please try again later',
-                                position: 'top-left'
-                            })
-                        }
-                    })
-            } 
+                try {
+                    const res = await helper.deleteCollection(this.$route.params.id)
+                    if(res.data.success) {
+                        this.$router.push('/mycollect')
+                        this.$notify({
+                            title: 'Success',
+                            type: 'success',
+                            message: 'you have deleted this collection',
+                            position: 'top-left'
+                        })
+                    } else {
+                        this.$notify({
+                            title: 'Warning',
+                            type: 'warning',
+                            message: 'sorry, please try again later',
+                            position: 'top-left'
+                        })
+                    }
+                } catch(err) {
+                    console.log(err.message)
+                }
+            } else {
+                return
+            }
         }
     },
     components: {

@@ -64,6 +64,7 @@
 <script>
 import { required, minLength } from 'vuelidate/lib/validators'
 import { mapGetters } from 'vuex'
+import * as helper from '@/helper/collectionHelper'
 
 export default {
     mounted() {
@@ -118,84 +119,81 @@ export default {
             this.displayNew = false
             this.$emit('open')
         },
-        getCollections() {
-            this.$http.post('/c/collections', { owner: this.userid })
-                .then(res => {
-                    //console.log(res.data)
-                    this.collections = res.data
-                })
-                .catch(err => {
-                    console.log(err)
-                })
+        async getCollections() {
+            try {
+                const res = await helper.getUserCollections(this.userid)
+                if(res.data.success) {
+                    this.collections = res.data.collections
+                }
+            } catch(err) {
+                console.log(err.message)
+            }
         },
         gotoCollection(collection) {
             this.collection_id = collection._id
             this.$router.push('/mycollect/' + this.collection_id)
         },
         /*add article to collection*/
-        addtoCollection(collection) {
+        async addtoCollection(collection) {
             this.collection_id = collection._id
             var request = { 
                 articleid: this.article,
                 collectionid: this.collection_id
             }
-            this.$http.post('/c/add', request)
-                .then(res => {
-                    if(res.data.success) {
-                        //console.log(res)
-                        this.getCollections()
-                        this.displayNew = false
-                        this.$notify({
-                            type: 'success',
-                            group: 'auth',
-                            text: res.data.message
-                        })
-                    } else {
-                        that.$notify({
-                            type: 'warn',
-                            group: 'auth',
-                            text: res.data.message
-                        })
-                    }
-                })
-                .catch(err => {
-                    console.log(err)
-                })
+            try {
+                const res = await helper.addArticle(request)
+                if(res.data.success) {
+                    this.displayNew = false
+                    this.$notify({
+                        title: 'Success',
+                        type: 'success',
+                        message: res.data.message,
+                        position: 'top-left'
+                    })
+                    this.getCollections()
+                } else {
+                    this.$notify({
+                        title: 'Warning',
+                        type: 'warning',
+                        message: res.data.message,
+                        position: 'top-left'
+                    })
+                }
+            } catch(err) {
+                console.log(err.message)
+            }
         },
         /*create collection*/
-        processNew() {
+        async processNew() {
             var request = {
                 userid: this.userid,
                 name: this.name,
                 description: this.description
             }
-            this.$http.post('/c/collection', request)
-                .then(res => {
-                    //console.log(res)
-                    if(res.data.success) {
-                        this.$notify({
-                            type: 'success',
-                            group: 'auth',
-                            text: res.data.message
-                        })
-                        this.getCollections()
-                        this.displayNew = false
-                    } else {
-                        that.$notify({
-                            type: 'warn',
-                            group: 'auth',
-                            text: res.data.message
-                        })
-                    }
-                })
-                .catch(err => {
-                    console.log(err)
-                })
+            try {
+                const res = await helper.createCollection(request)
+                if(res.data.success) {
+                    this.$notify({
+                        title: 'Success',
+                        type: 'success',
+                        message: res.data.message,
+                        position: 'top-left'
+                    })
+                    this.getCollections()
+                    this.displayNew = false
+                } else {
+                    this.$notify({
+                        title: 'Warning',
+                        type: 'warning',
+                        message: res.data.message,
+                        position: 'top-left'
+                    })
+                }
+            } catch(err) {
+                console.log(err.message)
+            }
         }
-    },
-	components: {
-		
-	}
+    }
 }
 </script>
 

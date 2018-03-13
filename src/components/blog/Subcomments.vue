@@ -93,6 +93,7 @@
 </template>
 <script>
 import  { mapGetters } from 'vuex'
+import * as helper from '@/helper/commentHelper'
 import moment from 'moment'
 export default {
     data() {
@@ -120,7 +121,7 @@ export default {
         ...mapGetters({
             isLogin: 'getState',
             userid: 'getID',
-            userpic: 'getCover'
+            userpic: 'getAvatar'
         })
     },
     filters: {
@@ -144,40 +145,38 @@ export default {
         async toggleLike(comment, index) {
             if(this.likestate == index && this.liked == false) {
                 try {
-                    const addlike = await this.$http.post('/m/addlike', { comment: comment._id })
+                    const addlike = await helper.addLike(comment._id)
                     comment.likes = addlike.data.likes
                     this.liked = true
                 } catch(err) {
-                    console.log(err)
+                    console.log(err.message)
                 } 
             } else if(this.likestate == index && this.liked == true) {
                 try {
-                    const cancellike = await this.$http.post('/m/cancellike', { comment: comment._id })
+                    const cancellike = await helper.cancelLike(comment._id)
                     comment.likes = cancellike.data.likes
                     this.liked = false
                 } catch(err) {
-                    console.log(err)
+                    console.log(err.message)
                 }
             } else {
                 this.likestate = index
                 try {
-                    const addlike = await this.$http.post('/m/addlike', { comment: comment._id })
+                    const addlike = await helper.addLike(comment._id)
                     comment.likes = addlike.data.likes
                     this.liked = true
                 } catch(err) {
-                    console.log(err)
+                    console.log(err.message)
                 } 
             }
         },
         sub(comment) {
             this.subcomments = comment.subcomments
-            //console.log(this.subcomments.slice(0,3))
             return comment.subcomments.slice(0,3)
         },
         restsub(comment) {
             if(comment.subcomments.length > 3) {
                 this.isShown = true
-                //console.log(this.subcomments.slice(3))
                 return comment.subcomments.slice(3)
             } else {
                 this.isShown = false
@@ -186,58 +185,58 @@ export default {
         showSub(comment, subindex) {
             this.current_primary = comment
             this.reply_to = comment.post_by
-            /*
-            if(this.selectedSub != subindex) {
-                this.selectedSub = subindex
-            } else {
-                this.selectedSub = -1
-            }
-            */
             this.showInput = true
         },
         cancelSub() {
             this.subcomment = ''
-            /*this.selectedSub = -1*/
             this.showInput = false
         },
-        writeSub() {
+        async writeSub() {
             const that = this
-            this.$http.post('/m/subcomment', { articleid: this.articleid, content: this.subcomment, author: this.userid, reply: this.reply_to._id })
-                .then(res => {
-                    if(res.data.success) {
-                        this.subcomment = ''
-                        this.showInput = false
-                        this.subid = res.data.new._id
-                        this.$http.get('/m/comment/' + this.subid)
-                            .then(res => {
-                                that.subcomments.push(res.data)
-                            })
-                        this.addtoComment(this.current_primary, this.subid)
-                        this.updateArticle()
+            try { 
+                const res = await helper.postSubcomment(this.articleid, this.subcomment, this.userid, this.reply_to._id)
+                if(res.data.success) {
+                    this.subcontent = ''
+                    this.showInput = false
+                    this.subid = res.data.newSub._id
+                    const sub = await helper.getComment(this.subid)
+                    if(sub.data.success) {
+                        that.comments.push(sub.data.comment)
                     }
-                })
-                .catch(err => {
-                    console.log(err)
-                })
+                    this.addtoComment(this.current_primary, this.subid)
+                    this.updateArticle()
+                }
+            } catch(err) {
+                console.log(err.message)
+            }
         },
-        addtoComment(comment, subid) {
-            this.$http.post('/m/addtocomment', { comment: comment._id, subid: subid })
-                .then(res => {
-                    //console.log(res.data.success)
-                })
-                .catch(err => {
-                    console.log(err)
-                })
+        async addtoComment(comment, subid) {
+            try {
+                const res = await helper.addToComment(comment._id, subid)
+                if(res.data.success) {
+                    return
+                } else {
+                    this.$notify({
+                        title: 'Warning',
+                        type: 'warning',
+                        message: 'comment not properly saved',
+                        position: 'top-left'
+                    })
+                }
+            } catch(err) {
+                console.log(err.message)
+            }
         },
-        updateArticle() {
-            this.$http.post('/m/article',  { articleid: this.articleid, add: true })
-                .then(res => {
+        async updateArticle() {
+            try {
+                const res = await helper.updateRecord(this.article, true)
+                if(res.data.success) {
                     this.number = res.data.comment
-                })
-                .catch(err => {
-                    console.log(err)
-                })
-        },
+                }
+            } catch(err) {
+                console.log(err.message)
+            }
+        }
     }
 }
 </script>
