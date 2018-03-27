@@ -83,7 +83,7 @@ export default {
 .content {
 	position: relative;
 	width: 280px;
-	margin: 20px 0 14px 14px;
+	margin: 20px 0 20px 14px;
 	padding-top: 45px;
 	background: #fff;
 	transition: all 0.3s;

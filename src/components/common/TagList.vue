@@ -76,26 +76,27 @@ export default {
         async retrieveTags() {
             try {
                 const res = await getTags()
-                if(!this.getID) {
+                if(this.getID) {
                     const user = await getUserTags({ userid: this.getID })
                 }
                 this.loading = false
                 if(res.data.success) {
                     this.tags = res.data.tags
-                } else if (user.data.success) {
-                    this.usertags = user.data.user.tags
-                    this.checkState(res.data.tags, user.data.user.tags)
-                } else {
-                    //notification
-                    this.$notify({
-                        title: 'Warning',
-                        type: 'warning',
-                        message: 'please refresh to get list',
-                        position: 'top-left'
-                    })
+                    if (user.data.success) {
+                        this.usertags = user.data.user.tags
+                        this.checkState(res.data.tags, user.data.user.tags)
+                    } else {
+                        //notification
+                        this.$notify({
+                            title: 'Warning',
+                            type: 'warning',
+                            message: 'please refresh to get list',
+                            position: 'top-left'
+                        })
+                    }
                 }
             } catch(err) {
-                console.log('error occurs')
+                console.log('error occurs when retrieving tags')
             }
         },
         checkState(tags, usertags) {
@@ -195,7 +196,7 @@ export default {
 .tag-container {
     height: 334px;
 	background: #fff;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     &:hover {
         box-shadow: 1px 1px 2px #ccc;
     }

@@ -20,14 +20,14 @@ export default {
             /*which page retrieve article list*/
             sourcePage: 'home',
             sliders: [
-                {sourceUrl: '', imgUrl: '/static/morning.jpg'},
-                {sourceUrl: '', imgUrl: '/static/waterfall.jpg'},
-                {sourceUrl: '', imgUrl: '/static/hills.jpg'}
+                {sourceUrl: '', imgUrl: '/static/grey.jpg'},
+                {sourceUrl: '', imgUrl: '/static/grey.jpg'},
+                {sourceUrl: '', imgUrl: '/static/grey.jpg'}
             ],
             titles: [
-                { title: 'Beautiful views one', sub: 'Morning moment' },
-                { title: 'Beautiful views two', sub: 'Beautiful waterfall' },
-                { title: 'Beautiful views three', sub: 'Hills and nature' }
+                { title: 'Slider one', sub: 'subtitle one' },
+                { title: 'Slider two', sub: 'subtitle two' },
+                { title: 'Slider three', sub: 'subtitle three' }
             ]
         }
     },
