@@ -68,7 +68,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import { email, required, sameAs, minLength } from 'vuelidate/lib/validators'
-import { registerUser } from '@/helper/userHelper'
+import { registerUser, loginUser } from '@/helper/userHelper'
 
 export default {
     data() {
@@ -105,17 +105,15 @@ export default {
             'switchLogin'
         ]),
         async processRegister() {
-            const that = this
             const request = {
                 name: this.name,
                 email: this.email,
-                password: this.password,
-                remember: this.remember
+                password: this.password
             }
             try {
                 const res = await registerUser(request)
                 if(res.data.success) {
-                    that.displayModal(false)
+                    this.displayModal(false)
                     //notification
                     this.$notify({
                         title: 'Success',
@@ -123,6 +121,35 @@ export default {
                         message: 'registration successfully',
                         position: 'top-left'
                     })
+                    //login user automatically
+                    request.remember = false
+                    const loginres = await loginUser(request)
+                    if(loginres.data.success) {
+                        const info = { id: loginres.data.id, name: loginres.data.name, email: loginres.data.email, avatar: loginres.data.avatar }
+                        this.displayModal(false)
+                        this.changeState(true)
+                        this.changeUser(info)
+                        socket.emit('login', loginres.data.id)
+                        //notification
+                        this.$notify({
+                            title: 'Success',
+                            type: 'success',
+                            message: 'login successfully',
+                            position: 'top-left'
+                        })
+                        if(this.$route.query.redirect) {
+                            const path = decodeURIComponent(this.$route.query.redirect)
+                            this.$router.replace({ path: path })
+                        }
+                    } else {
+                        //notification
+                        this.$notify({
+                            title: 'Warning',
+                            type: 'warning',
+                            message: res.data.message,
+                            position: 'top-left'
+                        })
+                    }
                 } else {
                     //notification
                     this.$notify({
@@ -133,7 +160,7 @@ export default {
                     })
                 }
             } catch(err) {
-                console.log('registration failed')
+                console.log('error ocrrus during the process')
             }
         }
     }

@@ -60,7 +60,7 @@
 <script>
 import { getUser } from '@/helper/userHelper'
 import { mapGetters } from 'vuex'
-import { sendFriendRequest, getFriendRequests, acceptFriendRequest, rejectFriendRequest, checkRequest } from '@/helper/userHelper'
+import { sendFriendRequest, getFriendRequests, acceptFriendRequest, rejectFriendRequest, checkRequest } from '@/helper/chatHelper'
 export default {
     mounted() {
         this.getRequests()
@@ -187,16 +187,18 @@ export default {
             const result = await acceptFriendRequest(request._id)
             if(result.data.success) {
                 this.$notify({
+                    title: 'Success',
                     type: 'success',
-                    group: 'auth',
-                    text: 'you have accepted friend application'
+                    message: 'you have accepted friend application',
+                    position: 'top-left'
                 })
                 this.getRequests()
             } else {
                 this.$notify({
-                    type: 'warn',
-                    group: 'auth',
-                    text: 'you failed to accept friend application'
+                    title: 'Warning',
+                    type: 'warning',
+                    message: 'you failed to accept friend application',
+                    position: 'top-left'
                 })
             }
         },
@@ -205,16 +207,18 @@ export default {
             const result = await rejectFriendRequest(request._id)
             if(result.data.success) {
                 this.$notify({
+                    title: 'Success',
                     type: 'success',
-                    group: 'auth',
-                    text: 'you have rejected friend application'
+                    message: 'you have rejected friend application',
+                    position: 'top-left'
                 })
                 this.getRequests()
             } else {
                 this.$notify({
-                    type: 'warn',
-                    group: 'auth',
-                    text: 'you failed to reject friend application'
+                    title: 'Warning',
+                    type: 'warning',
+                    message: 'you failed to reject friend application',
+                    position: 'top-left'
                 })
             }
         },
@@ -228,17 +232,19 @@ export default {
             const res = await sendFriendRequest(data)
             if(res.data.success) {
                 this.$notify({
+                    title: 'Success',
                     type: 'success',
-                    group: 'auth',
-                    text: res.data.message
+                    message: res.data.message,
+                    position: 'top-left'
                 })
                 this.showRequest = false
                 this.sendSocket()
             } else {
-                 this.$notify({
-                    type: 'warn',
-                    group: 'auth',
-                    text: res.data.message
+                this.$notify({
+                    title: 'Warning',
+                    type: 'warning',
+                    message: res.data.message,
+                    position: 'top-left'
                 })
             }
         },

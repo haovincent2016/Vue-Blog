@@ -1,35 +1,39 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Editor from '../pages/Editor'
-import Home from '../pages/Home'
-import Setting from '../pages/Setting'
-import Collection from '../pages/Collection'
-import Dashboard from '../pages/Dashboard'
-import UserPage from '../pages/UserPage'
-import Signin from '../pages/Signin'
-import Signup from '../pages/Signup'
-import Login from '../pages/Login'
-import Admin from '../pages/Admin'
 
-import AdminHome from '../admin/Home'
-import ArticleManage from '../admin/Article'
-import CollectionManage from '../admin/Collection'
-import CommentManage from '../admin/Comment'
-import MediaManage from '../admin/Media'
-import UserManage from '../admin/User'
-import TagManage from '../admin/Tag'
-import Blacklist from '../admin/Blacklist'
+const Editor = r => require.ensure([], () => r(require('../pages/Editor')), 'Editor')
+const Home = r => require.ensure([], () => r(require('../pages/Home')), 'Home')
+const Setting = r => require.ensure([], () => r(require('../pages/Setting')), 'Setting')
+const Collection = r => require.ensure([], () => r(require('../pages/Collection')), 'Collection')
+const Dashboard = r => require.ensure([], () => r(require('../pages/Dashboard')), 'Dashboard')
+const UserPage = r => require.ensure([], () => r(require('../pages/UserPage')), 'UserPage')
+const Signin = r => require.ensure([], () => r(require('../pages/Signin')), 'Signin')
+const Signup = r => require.ensure([], () => r(require('../pages/Signup')), 'Signup')
+const Login = r => require.ensure([], () => r(require('../pages/Login')), 'Login')
+const Admin = r => require.ensure([], () => r(require('../pages/Admin')), 'Admin')
 
-import Article from '../components/blog/Article'
-import CollectionDetail from '../components/blog/CollectionDetail'
-import Search from '../components/blog/Search'
-import TagDetail from '../components/blog/TagDetail'
+const AdminHome = r => require.ensure([], () => r(require('../admin/Home')), 'AdminHome')
+const ArticleManage = r => require.ensure([], () => r(require('../admin/Article')), 'ArticleManage')
+const CollectionManage = r => require.ensure([], () => r(require('../admin/Collection')), 'CollectionManage')
+const CommentManage = r => require.ensure([], () => r(require('../admin/Comment')), 'CommentManage')
+const MediaManage = r => require.ensure([], () => r(require('../admin/Media')), 'MediaManage')
+const UserManage = r => require.ensure([], () => r(require('../admin/User')), 'UserManage')
+const TagManage = r => require.ensure([], () => r(require('../admin/Tag')), 'TagManage')
+const Blacklist = r => require.ensure([], () => r(require('../admin/Blacklist')), 'Blacklist')
 
-import Basic from '../components/user/BasicSetting'
-import Account from '../components/user/Account'
-import MyArticles from '../components/user/UserArticles'
-import MyComments from '../components/user/UserComments'
-import MyActivities from '../components/user/UserActivities'
+const MainChat = r => require.ensure([], () => r(require('../components/chat/MainChat')), 'MainChat')
+const UserChat = r => require.ensure([], () => r(require('../components/chat/UserChat')), 'UserChat')
+
+const Article = r => require.ensure([], () => r(require('../components/blog/Article')), 'Article')
+const CollectionDetail = r => require.ensure([], () => r(require('../components/blog/CollectionDetail')), 'CollectionDetail')
+const Search = r => require.ensure([], () => r(require('../components/blog/Search')), 'Search')
+const TagDetail = r => require.ensure([], () => r(require('../components/blog/TagDetail')), 'TagDetail')
+
+const Basic = r => require.ensure([], () => r(require('../components/user/BasicSetting')), 'Basic')
+const Account = r => require.ensure([], () => r(require('../components/user/Account')), 'Account')
+const MyArticles = r => require.ensure([], () => r(require('../components/user/UserArticles')), 'MyArticles')
+const MyComments = r => require.ensure([], () => r(require('../components/user/UserComments')), 'MyComments')
+const MyActivities = r => require.ensure([], () => r(require('../components/user/UserActivities')), 'MyActivities')
 
 Vue.use(Router)
 
@@ -94,7 +98,15 @@ export default new Router({
                 {
                     path: 'comments',
                     component: MyComments
-                }
+                },
+                {
+                    path: 'chats',
+                    component: MainChat
+                },
+                {
+                    path: 'userchat/:id',
+                    component: UserChat 
+                }, 
             ]
         },
         {

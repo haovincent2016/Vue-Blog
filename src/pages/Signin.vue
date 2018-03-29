@@ -77,7 +77,6 @@ export default {
             'switchLogin'
         ]),
         async processLogin() {
-            const that = this
             const request = {
                 name: this.name,
                 email: this.loginemail,
@@ -88,10 +87,10 @@ export default {
                 const res = await loginUser(request)
                 if(res.data.success) {
                     const info = { id: res.data.id, name: res.data.name, email: res.data.email, avatar: res.data.avatar }
-                    that.displayModal(false)
-                    that.changeState(true)
-                    that.changeUser(info)
-                    //socket.emit('login', res.data.id)
+                    this.displayModal(false)
+                    this.changeState(true)
+                    this.changeUser(info)
+                    socket.emit('login', res.data.id)
                     //notification
                     this.$notify({
                         title: 'Success',
@@ -99,9 +98,9 @@ export default {
                         message: 'login successfully',
                         position: 'top-left'
                     })
-                    if(that.$route.query.redirect) {
-                        const path = decodeURIComponent(that.$route.query.redirect)
-                        that.$router.replace({ path: path })
+                    if(this.$route.query.redirect) {
+                        const path = decodeURIComponent(this.$route.query.redirect)
+                        this.$router.replace({ path: path })
                     }
                 } else {
                     //notification

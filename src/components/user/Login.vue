@@ -216,7 +216,7 @@ export default {
                     that.displayModal(false)
                     that.changeState(true)
                     that.changeUser(info)
-                    //socket.emit('login', res.data.id)
+                    socket.emit('login', res.data.id)
                     this.$notify({
                         title: 'Success',
                         type: 'success',

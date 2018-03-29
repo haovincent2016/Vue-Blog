@@ -114,6 +114,7 @@ export default {
 						position: 'top-left'
 					})
 				}
+				this.loading = false
 			} catch(err) {
 				console.log(err.message)
 			}

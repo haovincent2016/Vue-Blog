@@ -7,17 +7,17 @@
 		<el-popover
 			ref="publishpop"
 			placement="bottom"
-			width="160"
+			width="180"
 			height="140"
 			v-model="showpop">
-		<p>Are you sure to pulish article?</p>
+		<p style="text-align: left; margin-left: 25px;">Are you sure to pulish article?</p>
 		<!--save markdown article-->
-		<div v-if="editorSelected == 'markdown'" style="text-align: right; margin: 7px 3px 0 0">
+		<div v-if="editorSelected == 'markdown'" style="text-align: center; margin-top: 5px;">
 			<el-button size="mini" type="text" @click="showpop = false">cancel</el-button>
 			<el-button type="primary" size="mini" @click="addArticle('mk')">confirm</el-button>
 		</div>
 		<!--save quill article-->
-		<div v-else style="text-align: right; margin: 7px 3px 0 0">
+		<div v-else style="text-align: center; margin-top: 5px;">
 			<el-button size="mini" type="text" @click="showpop = false">cancel</el-button>
 			<el-button type="primary" size="mini" @click="addArticle('rt')">confirm</el-button>
 		</div>
@@ -26,17 +26,17 @@
 		<el-popover
 			ref="discardpop"
 			placement="bottom"
-			width="160"
+			width="180"
 			height="140"
 			v-model="showdiscard">
-		<p>Are you sure to delete article?</p>
+		<p style="text-align: left; margin-left: 25px;">Are you sure to delete article?</p>
 		<!--delete markdown article-->
-		<div v-if="editorSelected == 'markdown'" style="text-align: right; margin: 7px 3px 0 0">
+		<div v-if="editorSelected == 'markdown'" style="text-align: center; margin-top: 5px;">
 			<el-button type="text" size="mini" @click="showdiscard = false">cancel</el-button>
 			<el-button type="danger" size="mini" @click="deleteLocal()">confirm</el-button>
 		</div>
 		<!--delete quill article-->
-		<div v-else style="text-align: right; margin: 7px 3px 0 0">
+		<div v-else style="text-align: center; margin-top: 5px;">
 			<el-button type="text" size="mini" @click="showdiscard = false">cancel</el-button>
 			<el-button type="danger" size="mini" @click="deleteRichtext()">confirm</el-button>
 		</div>
@@ -163,8 +163,10 @@ export default {
 		},
 		async getTags() {
 			try {
-                const res = await getTags()
-				this.tags = res.data
+				const res = await getTags()
+				if(res.data.success) {
+					this.tags = res.data.tags
+				}
             } catch(err) {
                 console.log('failed to get tags')
             }

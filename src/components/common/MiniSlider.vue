@@ -18,8 +18,9 @@
 				<li class="content-item"
 					v-for="item in content.list"
                     :key="item.id">
-					<template v-if="item.type === 0">
-						<a :href="item.sourceUrl" target="_blank">
+					<template>
+						<h4 class="subheader">{{ item.title }}</h4>
+						<a href="#" target="_blank">
 							<img class="content-image" :src="item.imgUrl" alt="" />
 						</a>
 					</template>
@@ -68,12 +69,6 @@ export default {
 				this.currPage++
 			}
 			this.sliderMargin = this.currPage * (-280)
-		},
-		evtMouseEnter () {
-
-		},
-		evtMouseLeave () {
-
 		}
 	}
 }
@@ -97,7 +92,7 @@ export default {
 		margin-left: 0;
 	}
 	.title {
-		margin: 0 10px 18px;
+		margin: 0 10px 10px;
 		font-size: 16px;
 		font-weight: 280;
 		text-align: center;
@@ -182,6 +177,11 @@ export default {
 			float: left;
 			width: 280px;
 			height: 200px;
+			.subheader {
+				margin: 0px;
+				color: #bbb;
+				text-align: center;
+			}
 		}
 	}
 	.slide-pre, .slide-next {
@@ -253,12 +253,12 @@ export default {
 
 .dot-list {
 	display: block;
-	position: absolute;
-	left: 50%;
-	bottom: 10px;
-	width: 140px;
-	margin-left: -63px;
-	z-index: 11;
+    position: absolute;
+    left: 50%;
+    bottom: 0px;
+    width: 140px;
+    margin-left: -63px;
+    z-index: 10;
 	.dot-item {
 		display: inline-block;
 		width: 10px;

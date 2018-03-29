@@ -10,6 +10,15 @@
   </head>
   <body>
     <div id="app"></div>
-    <!-- built files will be auto injected -->
+    <script src="http://localhost:3001/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+      let socket = io.connect('http://localhost:3001');
+      let loginStatus= JSON.parse(localStorage.getItem("persist") || '{}');
+      if(Object.keys(loginStatus).length > 0) {
+        if(loginStatus.persist.isLogin) {
+          socket.emit('update',loginStatus.persist.userID);
+        }
+      }
+    </script>
   </body>
 </html>

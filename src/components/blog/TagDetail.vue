@@ -65,11 +65,13 @@ export default {
             try {
                 const res = await getTag(this.$route.params.id)
                 const usertags = await getUserTags({ userid: this.getID })
-                if(res.data.success && usertags.data.success) {
+                if(res.data.success) {
                     this.tagdetail = res.data.tag
                     this.subscribers = res.data.tag.subscribers.length
                     this.articles = res.data.tag.articles.length
-                    this.checkState(this.$route.params.id, usertags.data.user.tags)
+                    if(usertags.data.success) {
+                        this.checkState(this.$route.params.id, usertags.data.user.tags)
+                    }
                 } else {
                     this.$notify({
                         title: 'Warning',
