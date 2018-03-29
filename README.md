@@ -11,6 +11,7 @@
 [Blog Server](https://github.com/haovincent2016/Blog-Server)
 
 ## Features
+
 - [x] User authentication with user dashboard
 - [x] Blog posts CRUD
 - [x] Blog posts commenting
