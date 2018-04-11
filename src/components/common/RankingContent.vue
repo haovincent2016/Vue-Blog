@@ -313,6 +313,8 @@ export default {
             width: 50%;
             margin: 8px 0 0 8px;
             float: right;
+            height: 67px;
+            overflow: hidden;
         }
     }
 }

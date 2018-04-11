@@ -28,6 +28,9 @@
                 </div>
 
                 <!-- article content -->
+                <div class="article-cover">
+                    <img :src="article.cover" alt="cover"/>
+                </div>
                 <div v-html="content" class="show-content">
                 </div>
 
@@ -285,7 +288,7 @@ export default {
         padding-bottom: 40px;
         width: 620px;
         @media screen and (max-width: 420px) {
-            width: 93%;
+            width: 27em;
         }
         .article {
             margin-bottom: 30px;
@@ -359,6 +362,16 @@ export default {
                         span {
                             padding: 0 5px;
                         }
+                    }
+                }
+            }
+            .article-cover {
+                text-align: center;
+                margin-bottom: 15px;
+                img {
+                    box-shadow: 1px 1px 2px #ccc;
+                    @media screen and (max-width: 420px) {
+                        width: 27em;
                     }
                 }
             }

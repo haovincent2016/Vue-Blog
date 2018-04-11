@@ -90,7 +90,8 @@
                     <el-upload 
                         class="upload-wrapper"
                         drag
-                        :action="'https://vincenthao.info/admin/upload'"
+                        :action="'http://localhost:3001/admin/upload'"
+                        :headers="uploadHeader"
                         :show-file-list="false"
                         :on-success="handleSuccess"
                         :before-upload="beforeUpload"
@@ -123,7 +124,8 @@
                     <el-upload 
                         class="upload-wrapper"
                         drag
-                        :action="'https://vincenthao.info/admin/upload'"
+                        :action="'http://localhost:3001/admin/upload'"
+                        :headers="uploadHeader"
                         :show-file-list="false"
                         :on-success="handleSuccess"
                         :before-upload="beforeUpload"
@@ -157,6 +159,7 @@ export default {
     },
     data() {
         return {
+            uploadHeader: { 'authorization': localStorage.getItem('admintoken')},
             //localurl,
             tableData: [],
             currentRow: null,

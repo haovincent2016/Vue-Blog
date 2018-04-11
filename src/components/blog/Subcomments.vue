@@ -201,7 +201,7 @@ export default {
                     this.subid = res.data.newSub._id
                     const sub = await helper.getComment(this.subid)
                     if(sub.data.success) {
-                        that.comments.push(sub.data.comment)
+                        that.subcomments.push(sub.data.comment)
                     }
                     this.addtoComment(this.current_primary, this.subid)
                     this.updateArticle()
@@ -243,7 +243,7 @@ export default {
 <style lang="scss" scoped>
 .comment-wrap {
     .tool-group {
-        padding: 5px 0;
+        padding-top: 8px;
         a {
             margin-right: 10px;
             font-size: 14px;

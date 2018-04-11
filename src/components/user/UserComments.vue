@@ -55,7 +55,6 @@ export default {
 	},
 	data () {
 		return {
-			loading: true,
 			/*loading indicator*/
 			color: '#dddddd',
       		size: '12px',
@@ -102,9 +101,8 @@ export default {
         },
 		async getComments() {
 			try {
-				const res = getUserComments(this.user.id, this.pages.currentPage)
+				const res = await getUserComments(this.user.id, this.pages.currentPage)
 				if(res.data.success) {
-					this.loading = false
 					this.comments = res.data.comments
 				} else {
 					this.$notify({

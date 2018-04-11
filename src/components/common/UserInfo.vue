@@ -14,7 +14,7 @@
                 <div class="meta-block">
                     <a href="">
                         <p>{{ followers }}</p>
-                        Follows <i class="fa fa-angle-right"></i>
+                        Followers <!--<i class="fa fa-angle-right"></i>-->
                     </a>        
                 </div>
             </li>
@@ -22,7 +22,7 @@
                 <div class="meta-block">
                     <a href="">
                         <p>{{ subscribed }}</p>
-                        Subscribers <i class="fa fa-angle-right"></i>
+                        Subscribers <!--<i class="fa fa-angle-right"></i>-->
                     </a>        
                 </div>
             </li>
@@ -30,7 +30,7 @@
                 <div class="meta-block">
                     <a href="">
                         <p>{{ tags }}</p>
-                        Tags <i class="fa fa-angle-right"></i>
+                        Tags <!--<i class="fa fa-angle-right"></i>-->
                     </a>            
                 </div>
             </li>

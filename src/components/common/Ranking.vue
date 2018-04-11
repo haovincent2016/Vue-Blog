@@ -55,6 +55,8 @@ export default {
 <style lang="scss" scoped>
 .ranking-container {
 	background: #fff;
+	height: 334px;
+    margin-bottom: 20px;
 	&:hover {
 		box-shadow: 1px 1px 2px #ccc;
 	}

@@ -3,7 +3,7 @@ import axios from 'axios'
 export const getUserComments = (id, page) => {
     return axios({
         method: 'get',
-        url: '/usercomments/' + id,
+        url: '/m/usercomments/' + id,
         params: {
             page: page
         }
@@ -13,7 +13,7 @@ export const getUserComments = (id, page) => {
 export const getComments = (article, sort) => {
     return axios({
         method: 'get',
-        url: '/m/number',
+        url: '/m/comments',
         params: { 
             articleid: article, 
             sort: sort

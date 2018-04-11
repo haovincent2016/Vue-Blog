@@ -57,6 +57,7 @@
                     </div>
                 </div> 
                 <p>{{ comment.content }}</p>
+                <!--sub comment -->
                 <subcomments :primary="comment" :articleid="article" :primaryindex="index"></subcomments>
                 <div v-show="showInput && selectedSub === index" class="new-comment" style="margin-left:0">
                     <textarea  
@@ -129,7 +130,7 @@ export default {
         ...mapGetters({
             isLogin: 'getState',
             userid: 'getID',
-            userpic: 'getCover'
+            userpic: 'getAvatar'
         })
     },
     methods: {
@@ -209,7 +210,7 @@ export default {
         },
         async writeComment() {
             try {
-                const res = postComment(this.article, this.content, this.userid)
+                const res = await helper.postComment(this.article, this.content, this.userid)
                 if(res.data.success) {
                     this.content = ''
                     this.$notify({
@@ -219,6 +220,7 @@ export default {
                         position: 'top-left'
                     })
                     this.getComments()
+                    this.getNumber()
                     this.updateArticle() 
                 } else {
                     this.$notify({
@@ -366,7 +368,7 @@ export default {
     padding-bottom: 20px;
     width: 620px;
     @media screen and (max-width: 420px) {
-        width: 83%;
+        width: 23em;
     }
 }
 .comment-list {
@@ -541,9 +543,9 @@ export default {
 }
 /*primary comment*/
 .comment {
-    padding: 20px 0 30px;
+    padding: 20px 0 10px;
     .author {
-        margin-bottom: 15px;
+        margin-bottom: 10px;
         .avatar {
             margin-right: 5px;
             width: 38px;

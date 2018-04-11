@@ -457,7 +457,8 @@ export default {
         padding: 0 2px 8px 0;
         border-bottom: 1px solid #f0f0f0;
         word-wrap: break-word;
-        min-height: 140px;
+        height: 190px;
+        overflow: hidden;
         .wrap-img {
             position: absolute;
             top: 50%;
@@ -530,7 +531,11 @@ export default {
                 padding-right: 0;
                 font-size: 13px;
                 font-weight: 300;
-                line-height: 25px;
+                line-height: 23px;
+                position: absolute;
+                top: 87%;
+                z-index: 200;
+                background: #fff;
                 .action {
                     cursor: pointer;
                 }

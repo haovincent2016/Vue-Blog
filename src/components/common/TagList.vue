@@ -76,25 +76,25 @@ export default {
         async retrieveTags() {
             try {
                 const res = await getTags()
-                if(this.getID) {
-                    const user = await getUserTags({ userid: this.getID })
-                }
-                this.loading = false
                 if(res.data.success) {
                     this.tags = res.data.tags
-                    if (user.data.success) {
-                        this.usertags = user.data.user.tags
-                        this.checkState(res.data.tags, user.data.user.tags)
-                    } else {
-                        //notification
-                        this.$notify({
-                            title: 'Warning',
-                            type: 'warning',
-                            message: 'please refresh to get list',
-                            position: 'top-left'
-                        })
+                    if(this.getID) {
+                        const user = await getUserTags({ userid: this.getID })
+                        if (user.data.success) {
+                            this.usertags = user.data.user.tags
+                            this.checkState(res.data.tags, user.data.user.tags)
+                        } else {
+                            //notification
+                            this.$notify({
+                                title: 'Warning',
+                                type: 'warning',
+                                message: 'please refresh to get list',
+                                position: 'top-left'
+                            })
+                        }
                     }
                 }
+                this.loading = false
             } catch(err) {
                 console.log('error occurs when retrieving tags')
             }
