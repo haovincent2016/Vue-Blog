@@ -30,13 +30,9 @@ export default {
 
 <style lang="scss" scoped>
 .aside {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    margin: 86px 0 0;
-    padding: 0 0 30px;
+    flex: 30%;
+    margin: 8px;
     width: 250px;
-    overflow: auto;
     ul {
         background-color: white; 
         &:hover {

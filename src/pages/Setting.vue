@@ -23,9 +23,13 @@ export default {
 
 <style lang="scss" scoped>
 .container {
+    display: flex;
 	position: relative;
     margin: 0 auto;
     width: 100%;
     max-width: 980px;
+    @media screen and (max-width: 420px){
+        flex-direction: column;
+    }
 }
 </style>

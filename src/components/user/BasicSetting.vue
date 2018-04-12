@@ -186,12 +186,10 @@ export default {
 
 <style lang="scss" scoped>
 .main {
-    margin-left: 29%;
-    margin-top: 26px;
-    width: 63%;
+    flex: 68%;
+    margin: 8px;
+    padding-left: 10px; 
     background-color: #fff;
-    padding-left: 30px;
-    padding-bottom: 25px;
     &:hover {
         box-shadow: 1px 1px 2px #ccc;
     }

@@ -1,6 +1,11 @@
 <template>
     <div class="container">
-        <slider :sliders="sliders" :titles="titles"></slider>
+        <slider v-if="size > 0" :sliders="sliders" :titles="titles"></slider>
+        <mt-swipe :auto="0" v-else>
+            <mt-swipe-item v-for="banner in banners" :key="banner.id">
+                <img :src="banner" />
+            </mt-swipe-item>
+        </mt-swipe>
         <div class="left-column">
             <div class="split-line"></div>
             <list :source="sourcePage"></list>
@@ -14,15 +19,30 @@ import list from '@/components/blog/Articles'
 import sidebar from '@/components/common/Sidebar'
 import { loginJWT, logoutUser } from '@/helper/userHelper'
 import { mapActions, mapGetters } from 'vuex'
+
 export default {
+    created() {
+        if(window.screen.width > 420) {
+            this.size = 1
+        } else {
+            this.size = 0
+        }
+    },
     data() {
         return {
+            /*screen size*/
+            size: -1,
             /*which page retrieve article list*/
             sourcePage: 'home',
             sliders: [
-                {sourceUrl: '', imgUrl: '/static/grey.jpg'},
-                {sourceUrl: '', imgUrl: '/static/grey.jpg'},
-                {sourceUrl: '', imgUrl: '/static/grey.jpg'}
+                {sourceUrl: '', imgUrl: '/static/morning.jpg'},
+                {sourceUrl: '', imgUrl: '/static/hills.jpg'},
+                {sourceUrl: '', imgUrl: '/static/waterfall.jpg'}
+            ],
+            banners: [
+                '/static/banners/banner1.jpg',
+                '/static/banners/banner2.jpg',
+                '/static/banners/banner3.jpg',
             ],
             titles: [
                 { title: 'Slider one', sub: 'subtitle one' },
@@ -39,6 +59,10 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.mint-swipe {
+    height: 25em;
+    margin-bottom: 1em;
+}
 .container {
     position: relative;
     margin: 0 auto;
@@ -54,9 +78,9 @@ export default {
         &:hover {
             box-shadow: 1px 1px 2px #ccc;
         }
-        @media screen and (max-width: 980px) {
+        @media screen and (max-width: 420px) {
             position: relative;
-            width: 90%;
+            width: 80%;
             margin: 0 20px;
         }  
         .split-line {

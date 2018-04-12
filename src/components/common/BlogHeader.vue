@@ -407,6 +407,7 @@ export default {
             position: relative;
             margin: 0 auto;
             width: 100%;
+            padding-left: 2%;
             .article-title {
                 font-size: 19px;
                 line-height: 25px;
@@ -423,12 +424,12 @@ export default {
             }
             .article-operation {
                 position: absolute;
-                top: 25%;
-                right: 0;
+                top: 26%;
+                right: 4%;
                 .subscribe {
                     font-size: 14px;
                     padding: 4px 6px;
-                    margin-right: 8px;
+                    margin-right: 4px;
                     color: #00a1d6;
                     border: 1px solid #00a1d6;
                     border-radius: 5px;

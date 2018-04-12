@@ -16,6 +16,8 @@ import Vuelidate from 'vuelidate'
 import VueQuillEditor from 'vue-quill-editor'
 import VueScrollTo from 'vue-scrollto'
 import VueLazyload from 'vue-lazyload'
+import MintUI from 'mint-ui'
+import 'mint-ui/lib/style.css'
 import App from './App'
 import router from './router'
 import store from './store'
@@ -26,6 +28,7 @@ Vue.use(Vuelidate)
 Vue.use(VueQuillEditor)
 Vue.use(VueScrollTo)
 Vue.use(VueLazyload)
+Vue.use(MintUI)
 
 Vue.prototype.$http = axios
 Vue.config.productionTip = false
