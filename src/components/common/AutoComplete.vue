@@ -304,13 +304,10 @@ export default {
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0,0,0,.175);
 }
-.bg {
-
-}
 .info {
     box-shadow: 0 1px 3px rgba(0,0,0,.1);
     position: absolute;
-    top: 20%;
+    top: 40%;
     padding: 5px;
     background: white;
     border-radius: 10px;

@@ -25,8 +25,8 @@
         <!--first 3 subcomments-->
         <div v-for="(comment, index) in sub(primary)" :key="comment.id" class="sub-comment">
             <p>
-                <a href="" target="_blank">{{ comment.post_by.name }}</a>
-                <span>reply to <a href="" target="_blank">{{ comment.reply_to.name }}</a> : {{ comment.content }}</span>
+                <a class="user-link" @click="userPage(comment, true)" target="_blank">{{ comment.post_by.name }}</a>
+                <span>reply to <a class="user-link" @click="userPage(comment, false)" target="_blank">{{ comment.reply_to.name }}</a> : {{ comment.content }}</span>
             </p> 
             <div class="sub-tool-group">
                 <span>{{ comment.post_date | moment }}</span> 
@@ -48,8 +48,8 @@
         <!--the rest subcomments-->
         <div v-show="viewmore === false" v-for="(more, index) in restsub(primary)" :key="more.id" class="sub-comment">
             <p>
-                <a href="" target="_blank">{{ more.post_by.name }}</a>
-                <span>reply to <a href="" target="_blank">{{ more.reply_to.name }}</a> : {{ more.content }}</span>
+                <a class="user-link" @click="userPage(comment, true)" target="_blank">{{ more.post_by.name }}</a>
+                <span>reply to <a class="user-link" @click="userPage(comment, false)" target="_blank">{{ more.reply_to.name }}</a> : {{ more.content }}</span>
             </p> 
             <div class="sub-tool-group">
                 <span>{{ more.post_date | moment }}</span> 
@@ -139,6 +139,15 @@ export default {
         }
     },
     methods: {
+        userPage(comment, post) {
+            if(post) {
+                let path = comment.post_by._id
+                this.$router.push({ path: `/userpage/${path}` })
+            } else {
+                let path = comment.reply_to._id
+                this.$router.push({ path: `/userpage/${path}` })
+            }
+        },
         openLogin() {
             this.$store.dispatch('displayModal', { display: true, login: 'login' })
         },
@@ -249,6 +258,9 @@ export default {
             font-size: 14px;
             color: #969696;
             display: inline-block;
+            &:hover {
+                color: #13b9ef;
+            }
         }
     }
 }
@@ -265,11 +277,17 @@ export default {
             font-size: 14px;
             line-height: 1.5;
             a {
-                color: #00a1d6;
+                color: #13b9ef;
+                &:hover {
+                  color: #00a1d6;  
+                }
             }
             span {
                 a {
-                    color: #00a1d6;
+                    color: #13b9ef;
+                    &:hover {
+                    color: #00a1d6;  
+                    }
                 }
             }
         }
@@ -279,6 +297,9 @@ export default {
             a {
                 margin-left: 10px;
                 color: #969696;
+                &:hover {
+                    color: #00a1d6;  
+                }
             }
         }
     }
@@ -288,9 +309,16 @@ export default {
         border: none;
     }
     .show-more {
+        width: 82px;
         color: #00a1d6;
         font-size: 13px;
         margin: 8px 0;
+        &:hover {
+            background: lightgrey;
+            padding: 1px;
+            width: 82px;
+            border-radius: 6px;
+        }
     }
     .more-comment {
         margin-top: 10px;
@@ -350,7 +378,7 @@ export default {
             border: none;
             border-radius: 20px;
             color: #fff!important;
-            background-color: #ea6f5a;
+            background-color: #00a1d6;
             cursor: pointer;
             outline: none;
             display: block;

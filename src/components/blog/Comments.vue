@@ -5,9 +5,11 @@
     <div v-if="isLogin && opencomments" class="new-comment">
         <a class="avatar">
             <img :src="userpic">
+            <p @click="userPage">{{ user.name }}</p>
         </a> 
         <textarea 
-            @focus="operation = true" 
+            :class="{ bgactive: operation }"
+            @focus="operation = true"
             v-model="content" 
             placeholder="Please write down your comments...">
         </textarea>
@@ -48,11 +50,11 @@
             <!--primary comment--> 
             <div class="comment" v-if="opencomments" v-for="(comment, index) in comments" :key="comment.id">
                 <div class="author">
-                    <a href="" target="_blank" class="avatar">
+                    <a class="avatar">
                     <img :src="comment.post_by.avatar">
                     </a> 
                     <div class="info">
-                        <a href="" target="_blank" class="name">{{ comment.post_by.name }}</a>
+                        <a @click="userPage" target="_blank" class="name">{{ comment.post_by.name }}</a>
                         <div class="meta"><span>level {{ index + 1 }} · {{ comment.post_date | moment }}</span></div>
                     </div>
                 </div> 
@@ -129,11 +131,16 @@ export default {
     computed: {
         ...mapGetters({
             isLogin: 'getState',
+            user: 'getUser',
             userid: 'getID',
             userpic: 'getAvatar'
         })
     },
     methods: {
+        userPage() {
+            let path = this.userid
+            this.$router.push({ path: `/userpage/${path}` })
+        },
         openLogin() {
             this.$store.dispatch('displayModal', { display: true, login: 'login' })
         },
@@ -438,11 +445,15 @@ export default {
             font-size: 13px;
             border: 1px solid #dcdcdc;
             border-radius: 4px;
-            background-color: rgba(220, 220, 220, 0.1);
+            background: rgba(220, 220, 220, 0.1);
             resize: none;
             display: inline-block;
             vertical-align: top;
             outline-style: none;
+        }
+        .bgactive {
+            background: #fff;
+            border: 1px solid #00a1d6;
         }
         .write-function-block {
             height: 50px;
@@ -462,7 +473,7 @@ export default {
                 border: none;
                 border-radius: 20px;
                 color: #fff!important;
-                background-color: #ea6f5a;
+                background-color: #00a1d6;
                 cursor: pointer;
                 outline: none;
                 display: block;
@@ -567,6 +578,9 @@ export default {
             .name {
                 font-size: 15px;
                 color: #333;
+                &:hover {
+                    color: #00a1d6;
+                }
             }
             .meta {
                 font-size: 12px;
@@ -576,6 +590,9 @@ export default {
                 }
             }
         }
+    }
+    p {
+        font-size: 15px;
     }
     .comment-wrap {
         p {
@@ -604,6 +621,14 @@ export default {
             border-radius: 50%;
             vertical-align: middle;
         }
+        p {
+            margin-top: 4px;
+            width: 40px;
+            text-overflow: ellipsis;
+            &:hover {
+                color: #00a1d6;
+            }
+        }
     }
     textarea {
         padding: 10px 15px;
@@ -629,7 +654,7 @@ export default {
             border: none;
             border-radius: 20px;
             color: #fff!important;
-            background-color: #ea6f5a;
+            background-color: #00a1d6;
             cursor: pointer;
             outline: none;
             display: block;

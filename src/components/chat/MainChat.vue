@@ -1,12 +1,15 @@
 <template>
 <div class="wrapper">
+    <!-- left menu area -->
     <div class="left-menu">
         <div class="left-header">
             <div class="header-item first" :class="{highlight: tabIndex===1}" 
-                @click="activeTab(1)">Friends
+                @click="activeTab(1)">
+                <p>Friends</p>
             </div>
             <div class="header-item" :class="{highlight: tabIndex===2}" 
-                @click="activeTab(2)">Groups
+                @click="activeTab(2)">
+                <p>Groups</p>
             </div>
         </div>
         <div class="left-content">
@@ -29,7 +32,7 @@
         <div class="setting">
         </div>
     </div>
-    <!--search user area -->
+    <!-- search user area -->
     <div class="main-content">
         <div class="content-header">
             <autocomplete :suggestions="suggestions" v-model="selection"></autocomplete>
@@ -115,12 +118,13 @@ export default {
 
 <style lang="scss" scoped>
 .wrapper {
-    height: auto;
+    display: flex;
+    @media screen and (max-width: 420px) {
+        flex-direction: column;
+    }
 }
 .left-menu {
-    width: 260px;
-    height: 585px;
-    display: inline-block;
+    flex: 25%;
     border-top: 1px solid #eee; 
     border-right: 1px solid #eee;
     .left-header {
@@ -179,11 +183,7 @@ export default {
     }
 }
 .main-content {
-    width: 720px;
-    height: 585px;
-    position: absolute;
-    right: 0;
-    bottom: 0;
+    flex: 75%;
     border-top: 1px solid #eee;
     .content-header {
         align-items: center;

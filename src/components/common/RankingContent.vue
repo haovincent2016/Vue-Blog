@@ -62,7 +62,7 @@ export default {
         return {
             currentIndex: 1,
             onHover: false,
-            topMargin: 1028,
+            topMargin: 1022,
             articles: [],
             others: [],
             preview: {}
@@ -150,8 +150,8 @@ export default {
         .rank-item {
             position: relative;
             padding-left: 25px;
-            padding-bottom: 10px;
-            margin: 10px 0 0 10px;
+            padding-bottom: 7px;
+            margin: 15px 0 0 10px;
             overflow: hidden;
             .num {
                 position: absolute;

@@ -1,73 +1,86 @@
 <template>
-<div class="wrapper">
-    <!--left menu-->
-    <div class="left-menu">
-        <div class="left-header">
-            <div class="header-item first" :class="{highlight: tabIndex===1}" 
-                @click="activeTab(1)">Friends
+<div>
+    <div class="wrapper">
+        <!--left menu-->
+        <div class="left-menu">
+            <div class="left-header">
+                <div class="header-item first" :class="{highlight: tabIndex===1}" 
+                    @click="activeTab(1)">Friends
+                </div>
+                <div class="header-item" :class="{highlight: tabIndex===2}" 
+                    @click="activeTab(2)">Groups
+                </div>
             </div>
-            <div class="header-item" :class="{highlight: tabIndex===2}"
-                @click="activeTab(2)">Messages
+            <div class="left-content">
+                <ul v-show="tabIndex===1" class="message-list">
+                    <li v-for="friend in friends" :key="friend.id" :class="{active: friend._id === `${otherId}`}" @click="gotoChat(friend._id)">
+                        <div class="author">
+                            <a class="avatar" target="_blank" >
+                                <img :src="friend.avatar" alt="180">
+                            </a>      
+                            <div class="name">
+                                <a target="_blank" >{{ friend.name }}</a>
+                            </div>
+                            <div class="indicator" v-show="unread != 0"> {{ unread }}</div>
+                        </div>
+                        <div class="last" v-html="convertFaces(lastMessage)">
+                        </div>
+                    </li>
+                </ul>
+                <ul v-show="tabIndex===2" class="message-list">
+                </ul>
+                <ul v-show="tabIndex===3" class="message-list">
+                </ul>
             </div>
-            <div class="header-item" :class="{highlight: tabIndex===3}" 
-                @click="activeTab(3)">Groups
+            <div class="setting">
             </div>
         </div>
-        <div class="left-content">
-            <ul v-show="tabIndex===1" class="message-list">
-                <li v-for="friend in friends" :key="friend.id" :class="{active: friend._id === `${otherId}`}" @click="gotoChat(friend._id)">
-                    <div class="author">
-                        <a class="avatar" target="_blank" >
-                            <img :src="friend.avatar" alt="180">
-                        </a>      
-                        <div class="name">
-                            <a target="_blank" >{{ friend.name }}</a>
+        <!--main content-->
+        <div class="main-content">
+            <div class="content-header">
+                <span class="back" @click="goBack()"><i class="fa fa-chevron-left"></i>back</span>
+                <i class="fa fa-comments-o"></i>
+                <p @click="goTop()">{{ chat_with.name }}</p>
+            </div>
+            <ul class="message-body">
+                <li v-for="item in messages" 
+                    :key="item.id" 
+                    :class="{time: item.type === 'time', self: item.by === 'self', other: item.by === 'other'}">
+                    <template v-if="item.by === 'self' || item.by === 'other'">
+                        <div class="author">
+                            <a class="avatar" target="_blank" >
+                                <img :src="item.from_avatar" alt="180">
+                            </a>   
                         </div>
-                        <div class="indicator" v-show="unread != 0"> {{ unread }}</div>
-                    </div>
-                    <div class="last">
-                        {{ lastMessage }}
-                    </div>
+                        <div class="message-content" v-html="convertFaces(item.content)"></div>
+                    </template>
+                    <template v-else>
+                        <div v-html="convertFaces(item.content)"></div>
+                    </template>
                 </li>
             </ul>
-            <ul v-show="tabIndex===2" class="message-list">
-            </ul>
-            <ul v-show="tabIndex===3" class="message-list">
-            </ul>
-        </div>
-        <div class="setting">
+            <textarea placeholder="enter your message now..." rows="5" v-model="content" class="input-area"></textarea> 
         </div>
     </div>
-    <!--main content-->
-    <div class="main-content">
-        <div class="content-header">
-            <span class="back" @click="goBack()"><i class="fa fa-chevron-left"></i>back</span>
-            <i class="fa fa-comments-o"></i>
-            <p @click="goTop()">{{ chat_with.name }}</p>
-        </div>
-        <ul class="message-body">
-            <li v-for="item in messages" 
-                :key="item.id" 
-                :class="{time: item.type === 'time', self: item.by === 'self', other: item.by === 'other'}">
-                <template v-if="item.by === 'self' || item.by === 'other'">
-                    <div class="author">
-                        <a class="avatar" target="_blank" >
-                            <img :src="item.from_avatar" alt="180">
-                        </a>   
-                    </div>
-                    <p class="message-content">{{ item.content }}</p>
-                </template>
-                <template v-else>
-                    {{ item.content }}
-                </template>
-            </li>
-        </ul> 
-    </div>
-    <textarea placeholder="enter your message now..." rows="5" v-model="content" class="input-area"></textarea>
     <div class="send-message">   
-        <button class="btn-send" @click="resetMessage()">cancel</button>
-        <button class="btn-send" @click="sendMessage()">send</button>
+        <button class="btn-send" @click="resetMessage">cancel</button>
+        <button class="btn-send" @click="sendMessage">send</button>
+        <!-- for faces input -->
+        <el-popover
+            ref="popoverfaces"
+            placement="top-start"
+            width="320"
+            trigger="click">
+            <p class="faces-title">Choose a face</p>
+            <div class="faces-wrapper">
+                <div class="face" v-for="(item, index) in faces" :key="item.id">
+                    <img :src="'/static/faces/'+item.file" alt="gif" :data="item.code" @click="addFaces(item, index)">
+                </div>
+            </div>
+        </el-popover>
+        <el-button v-popover:popoverfaces class="btn-gif"><i class="fa fa-smile-o"></i>faces</el-button>
     </div>
+    
 </div>
 </template>
 <script>
@@ -100,7 +113,44 @@ export default {
             unread: 0,
 
             tabIndex: 1,
-            friends: []
+            friends: [],
+
+            //faces
+            faceContent: '',
+            faces: [
+                { file: '100.gif', code: '/::)', title: '微笑',reg:/\/::\)/g },
+                { file: '101.gif', code: '/::~', title: '伤心',reg:/\/::~/g },
+                { file: '102.gif', code: '/::B', title: '美女',reg:/\/::B/g },
+                { file: '103.gif', code: '/::|', title: '发呆',reg:/\/::\|/g },
+                { file: '104.gif', code: '/:8-)', title: '墨镜',reg:/\/:8-\)/g },
+                { file: '105.gif', code: '/::<', title: '哭',reg:/\/::</g },
+                { file: '106.gif', code: '/::$', title: '羞',reg:/\/::\$/g },
+                { file: '107.gif', code: '/::X', title: '哑',reg:/\/::X/g },
+                { file: '108.gif', code: '/::Z', title: '睡',reg:/\/::Z/g },
+                { file: '109.gif', code: '/::\'(', title: '哭',reg:/\/::'\(/g },
+                { file: '110.gif', code: '/::-|', title: '囧',reg:/\/::-\|/g },
+                { file: '111.gif', code: '/::@', title: '怒',reg:/\/::@/g },
+                { file: '112.gif', code: '/::P', title: '调皮',reg:/\/::P/g },
+                { file: '113.gif', code: '/::D', title: '笑',reg:/\/::D/g },
+                { file: '114.gif', code: '/::O', title: '惊讶',reg:/\/::O/g },
+                { file: '115.gif', code: '/::(', title: '难过',reg:/\/::\(/g },
+                { file: '116.gif', code: '/::+', title: '酷',reg:/\/::\+/g },
+                { file: '117.gif', code: '/:--b', title: '汗',reg:/\/:--b/g },
+                { file: '118.gif', code: '/::Q', title: '抓狂',reg:/\/::Q/g },
+                { file: '119.gif', code: '/::T', title: '吐',reg:/\/::T/g },
+                { file: '120.gif', code: '/:,@P', title: '笑',reg:/\/:,@P/g },
+                { file: '121.gif', code: '/:,@-D', title: '快乐',reg:/\/:,@-D/g },
+                { file: '122.gif', code: '/::d', title: '奇',reg:/\/::d/g },
+                { file: '123.gif', code: '/:,@o', title: '傲' ,reg:/\/:,@o/g},
+                { file: '124.gif', code: '/::g', title: '饿',reg:/\/::g/g },
+                { file: '125.gif', code: '/:|-)', title: '累' ,reg:/\/:\|-\)/g},
+                { file: '126.gif', code: '/::!', title: '吓',reg:/\/::!/g },
+                { file: '127.gif', code: '/:,@H', title: '汗',reg:/\/:,@H/g },
+                { file: '128.gif', code: '/:,@U', title: '仰笑',reg:/\/:,@U/g },
+                { file: '129.gif', code: '/:,@Y', title: '吸烟',reg:/\/:,@Y/g },
+                { file: '130.gif', code: '/:,@F', title: '奋斗',reg:/\/:,@F/g },
+                { file: '131.gif', code: '/::><', title: '不满',reg:/\/::\>\</g }
+            ]
         }
     },
     watch: {
@@ -128,7 +178,17 @@ export default {
         fixLocation() {
             setTimeout(() => {
                 $(".message-body").scrollTop($(".message-body")[0].scrollHeight)
-            }, 0)
+            }, 100)
+        },
+        convertFaces(content) {
+            let faces = this.faces
+            for(let i = 0; i < faces.length; i++) {
+                content = content.replace(faces[i].reg, '<img src="/static/faces/' + faces[i].file +'"  alt="face" />');
+            }
+            return content
+        },
+        addFaces(item, index) {
+            this.content += item.code
         },
         resetMessage() {
             this.content = ''
@@ -291,12 +351,13 @@ export default {
 </script>
 <style lang="scss" scoped>
 .wrapper {
-    height: auto;
+    display: flex;
+    @media screen and (max-width: 420px) {
+        flex-direction: column;
+    }
 }
 .left-menu {
-    width: 260px;
-    height: 585px;
-    display: inline-block;
+    flex: 25%;
     border-top: 1px solid #eee; 
     border-right: 1px solid #eee;
     .left-header {
@@ -366,7 +427,7 @@ export default {
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
-                    max-width: 206px;
+                    max-width: 185px;
                     background: #fff;
                     padding: 8px;
                     border-radius: 14px;
@@ -377,12 +438,8 @@ export default {
     }
 }
 .main-content {
-    width: 720px;
-    position: absolute;
-    right: 0;
-    bottom: 137px;
+    flex: 75%;
     border-top: 1px solid #eee;
-    border-bottom: 1px solid #eee;
     .content-header {
         align-items: center;
         height: 34px;
@@ -457,7 +514,6 @@ export default {
                 background: #fff;
                 color: #000;
                 height: auto;
-                line-height: 23px;
                 width: auto;
                 max-width: 230px;
                 display: inline-block;
@@ -504,13 +560,16 @@ export default {
             }
         }
     }
+    .input-area {
+        width: 98%;
+        border: none;
+        padding: 8px;
+        resize: none;
+        outline: none;
+    }
 }
 .send-message {
-    height: 26px;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    margin-bottom: 5px;
+    height: 28px;
     .btn-send {
         float: right;
         margin: 0 8px 10px 0;
@@ -518,7 +577,7 @@ export default {
         padding: 3px 8px;
         color: #ea6f5a;
         border: 1px solid #ea6f5a;
-        border-radius: 3px;
+        border-radius: 5px;
         background: none;
         outline: none;
         cursor: pointer;
@@ -527,16 +586,34 @@ export default {
             color: #fff;
         }
     }
+    .btn-gif {
+        float: right;
+        margin: 0 8px 10px 0;
+        font-size: 14px;
+        padding: 3px 8px;
+        color: grey;
+        border: 1px solid grey;
+        border-radius: 5px;
+        background: none;
+        outline: none;
+        cursor: pointer;
+        &:hover {
+            background: grey;
+            color: #fff;
+        }
+        .fa {
+            margin-right: 3px;
+        } 
+    }
 }
-.input-area {
-    position: absolute;
-    right: 0;
-    bottom: 28px;
-    width: 71%;
-    height: 12%;
-    border: none;
-    padding: 8px;
-    resize: none;
-    outline: none;
+.faces-title {
+    text-align: center;
+}
+.faces-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    .face {
+
+    }
 }
 </style>

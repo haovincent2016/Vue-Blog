@@ -12,7 +12,7 @@
                         <span class="name"  @click="userPage"><a>{{ user.name }}</a></span>
                         <span class="tag">Author</span>
                         <!-- subscribe/unsubscribe -->
-                        <a class="btn btn-disabled follow" v-show="disabled"><span>Subscribe</span></a>
+                        <a class="btn btn-disabled follow" v-show="disabled" @click="notice"><span>Subscribe</span></a>
                         <a class="btn btn-success follow" v-show="!substate && !disabled" @click="subscribe"><span>Subscribe</span></a>
                         <a class="btn btn-success follow" v-show="substate" @click="unsubscribe"><span>Unsubscribe</span></a>
                         <!-- article stats -->
@@ -51,10 +51,10 @@
                         <img :src="user.avatar" alt="avatar">
                     </a>
                     <!--show if article is written by login user-->
-                    <a class="btn btn-disabled follow" v-show="disabled"><span>Subscribe</span></a>          
+                    <a class="btn btn-disabled follow" v-show="disabled" @click="notice"><span>Subscribe</span></a>          
                     <a class="btn btn-success follow" v-show="!substate && !disabled" @click="subscribe"><span>Subscribe</span></a>
                     <a class="btn btn-success follow" v-show="substate" @click="unsubscribe"><span>Unsubscribe</span></a>
-                    <a class="title" @click="userPage">{{ user.name }}</a>
+                    <a class="title" @click="userPage" target="_blank">{{ user.name }}</a>
                     
                     <p>Subscribed by {{ subcount | number }}</p>
                 </div>
@@ -167,6 +167,15 @@ export default {
                 this.$store.dispatch('displayModal', { display: true, login: 'login' })
             }
         },
+        //notice user cannot subscribe self
+        notice() {
+            this.$notify({
+                title: 'Warning',
+                type: 'warning',
+                message: 'sorry, you cannot subscribe to yourself',
+                position: 'top-left'
+            })
+        },
         async getDetail() {
             try {
                 const res = await getArticle(this.$route.params.id)
@@ -184,7 +193,7 @@ export default {
                     this.getSubState()
                 }
             } catch(err) {
-                //console.log(err)
+                console.log(err.message)
             }
         },
         /*get number of likes*/
@@ -194,7 +203,7 @@ export default {
                 this.likes = res.data.like
                 this.$http.get('/v/like/' + this.$route.params.id)
             } catch(err) {
-                //console.log(err)
+                console.log(err.message)
             }
         },
         async getLikeState() {
@@ -202,7 +211,7 @@ export default {
                 const res = await checkLike(this.$route.params.id, this.userid)
                 this.liked = res.data
             } catch(err) {
-                //console.log(err)
+                console.log(err.message)
             }
         },
         async getSubState() {
@@ -210,7 +219,7 @@ export default {
                 const res = await checkSub(this.userid, this.user._id)
                 this.subscribed = res.data
             } catch(err) {
-                //console.log(err)
+                console.log(err.message)
             }
         },
         async getSubCount() {
@@ -218,7 +227,7 @@ export default {
                 const res = await countSub(this.user._id)
                 this.subcount = res.data.followers.length
             } catch(err) {
-                //console.log(err)
+                console.log(err.message)
             }
         },
         async addLike() {
@@ -231,7 +240,7 @@ export default {
                     this.$store.dispatch('displayModal', { display: true, login: 'login' })
                 }
             } catch(err) {
-               //console.log(err)
+               console.log(err.message)
             }
         },
         async cancelLike() {
@@ -240,7 +249,7 @@ export default {
                 this.likes = res.data.like
                 this.liked = false
             } catch(err) {
-                //console.log(err)
+                console.log(err.message)
             }
         },
         async subscribe() {
@@ -248,21 +257,33 @@ export default {
                 if(this.login) {
                     const res = await subscribe({ id: this.userid, author: this.user._id })
                     this.subscribed = true
+                    this.$notify({
+                        title: 'Success',
+                        type: 'success',
+                        message: 'you have subscribed to this author',
+                        position: 'top-left'
+                    })
                     this.getSubCount()
                 } else {
                     this.$store.dispatch('displayModal', { display: true, login: 'login' })
                 }
             } catch(err) {
-                //console.log(err)
+                console.log(err.message)
             }
         },
         async unsubscribe() {
             try {
                 const res = await unsubscribe({ id: this.userid, author: this.user._id })
                 this.subscribed = false
+                this.$notify({
+                    title: 'Success',
+                    type: 'success',
+                    message: 'you have unsubscribed to this author',
+                    position: 'top-left'
+                })
                 this.getSubCount()
             } catch(err) {
-                //console.log(err)
+                console.log(err.message)
             }
         }
     },
@@ -276,9 +297,6 @@ export default {
 <style lang="scss" scoped>
 .fa-bookmark-o {
     margin-top: 6px;
-}
-#commentarea {
-    margin-bottom: 40px;
 }
 .wrapper {
     background: #fff;
