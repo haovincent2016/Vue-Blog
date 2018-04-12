@@ -30,7 +30,6 @@
     <div class="info-box">
         <div class="container">
             <ul class="info-list left">
-                <li class="item follow"></li>
                 <li class="item">{{ count }} Articles</li>
                 <li class="item">{{ subscriber }} Subscribers</li>
                 <li class="item">{{ collection.created_at | moment }} Created</li>
@@ -388,14 +387,9 @@ export default {
         line-height: 1;
         background-color: #f8f9fa;
         .container {
-            display: -webkit-box;
-            display: -ms-flexbox;
             display: flex;
-            -webkit-box-align: center;
-            -ms-flex-align: center;
+            flex-wrap: wrap;
             align-items: center;
-            -webkit-box-pack: justify;
-            -ms-flex-pack: justify;
             justify-content: space-between;
             padding: 0 2rem;
             box-sizing: border-box;
@@ -404,18 +398,13 @@ export default {
             width: 100%;
             max-width: 960px;
             .info-list {
-                display: -webkit-box;
-                display: -ms-flexbox;
-                display: flex;
-                -webkit-box-align: center;
-                -ms-flex-align: center;
-                align-items: center;
                 font-size: 1.167rem;
                 color: #909090;
                 .item {
                     margin-right: 5px;
-                    padding-right: 5px;
-                    border-right: 1px solid lightgrey;
+                    padding-top: 5px;
+                    padding-left: 10px;
+                    border-left: 1px solid lightgrey;
                 }
                 .right {
                     float: right;
@@ -427,6 +416,7 @@ export default {
 .subscribe {
     font-size: 14px;
     padding: 5px 10px;
+    margin-top: 5px; 
     color: #00a1d6;
     border: 1px solid #00a1d6;
     border-radius: 5px;
@@ -440,6 +430,7 @@ export default {
 .unsubscribe {
     font-size: 14px;
     padding: 5px 10px;
+    margin-top: 5px; 
     border: 1px solid #00a1d6;
     border-radius: 5px;
     background: #00a1d6;
@@ -454,6 +445,7 @@ export default {
     margin-left: 5px;
     font-size: 14px;
     padding: 5px 10px;
+    margin-top: 5px; 
     color: #f4424e;
     border: 1px solid #f4424e;
     border-radius: 5px;

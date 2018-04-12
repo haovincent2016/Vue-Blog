@@ -11,6 +11,7 @@ const Signin = r => require.ensure([], () => r(require('../pages/Signin')), 'Sig
 const Signup = r => require.ensure([], () => r(require('../pages/Signup')), 'Signup')
 const Login = r => require.ensure([], () => r(require('../pages/Login')), 'Login')
 const Admin = r => require.ensure([], () => r(require('../pages/Admin')), 'Admin')
+const Video = r => require.ensure([], () => r(require('../pages/Video')), 'Video')
 
 const AdminHome = r => require.ensure([], () => r(require('../admin/Home')), 'AdminHome')
 const ArticleManage = r => require.ensure([], () => r(require('../admin/Article')), 'ArticleManage')
@@ -35,6 +36,8 @@ const MyArticles = r => require.ensure([], () => r(require('../components/user/U
 const MyComments = r => require.ensure([], () => r(require('../components/user/UserComments')), 'MyComments')
 const MyActivities = r => require.ensure([], () => r(require('../components/user/UserActivities')), 'MyActivities')
 
+const SingleVideo = r => require.ensure([], () => r(require('../components/video/SingleVideo')), 'SingleVideo')
+
 Vue.use(Router)
 
 export default new Router({
@@ -52,6 +55,16 @@ export default new Router({
             path: '/',
             name: 'home',
             component: Home
+        },
+        {
+            path: '/video',
+            name: 'video',
+            component: Video
+        },
+        {
+            path: '/video/:id',
+            name: 'single',
+            component: SingleVideo
         },
         {
             path: '/signin',

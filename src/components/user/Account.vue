@@ -25,7 +25,12 @@ export default {
     },
     methods:{
         deleteAccount() {
-
+            this.$notify({
+                title: 'Warning',
+                type: 'warning',
+                message: 'sorry, not available for normal users',
+                position: 'top-left'
+            })
         }
     }
 }

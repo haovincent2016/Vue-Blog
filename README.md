@@ -18,6 +18,7 @@
 - [x] Admin management (including users, blacklists, posts, tags)
 - [x] Real-time chat (including friend application, user search)
 - [x] Collection for blog posts
+- [x] Video and Danmaku support using [DPlayer](https://github.com/MoePlayer/DPlayer)
 
 ## Build Setup
 
@@ -33,5 +34,7 @@ npm run build
 
 # build for production and view the bundle analyzer report
 npm run build --report
+
+# for danmaku support, setup redis server first
 ```
 

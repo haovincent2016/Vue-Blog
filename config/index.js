@@ -11,7 +11,7 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {},
-    context: ['/v', '/c', '/m', '/auth', '/admin'],
+    context: ['/v', '/c', '/m', '/auth', '/admin', '/d'],
     proxypath: 'http://localhost:3001',
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST

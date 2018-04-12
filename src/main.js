@@ -16,6 +16,7 @@ import Vuelidate from 'vuelidate'
 import VueQuillEditor from 'vue-quill-editor'
 import VueScrollTo from 'vue-scrollto'
 import VueLazyload from 'vue-lazyload'
+import VueYouTubeEmbed from 'vue-youtube-embed'
 import MintUI from 'mint-ui'
 import 'mint-ui/lib/style.css'
 import App from './App'
@@ -28,6 +29,7 @@ Vue.use(Vuelidate)
 Vue.use(VueQuillEditor)
 Vue.use(VueScrollTo)
 Vue.use(VueLazyload)
+Vue.use(VueYouTubeEmbed)
 Vue.use(MintUI)
 
 Vue.prototype.$http = axios

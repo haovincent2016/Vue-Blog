@@ -22,7 +22,7 @@
                                 <a >Articles</a>
                             </li>
                             <li class="nav-item">
-                                <a>Video</a>
+                                <router-link :to="{name: 'video'}">Video</router-link>
                             </li>
                             <li class="nav-item">
                                 <a >Musics</a>
@@ -41,23 +41,23 @@
                                 @keyup.enter="search">
                             <i alt="search" :class="{ iconactive: focused }" class="fa fa-search" @click="search"></i>
                         
-                            <ul v-if="showSearch && searchHistory.length > 0" class="dropdown-search">
+                            <ul v-if="showSearch" class="dropdown-search">
                                 <!--search history-->
-                                <li class="search-title">
+                                <li class="search-title" v-if="searchHistory.length > 0">
                                     <a class="search-clear" @click="clearHistory">Clear</a>
                                     <i class="search-icon fa fa-clock-o"></i><span>Recent(5)</span>
                                 </li>
                                 <li class="suggest-item" v-for="(item, index) in searchHistory" :key="item.id" @click="searchOld(index)">
                                     <a>{{ item }}</a>
                                 </li>
-                                <!--trending search
+                                <!--trending search-->
                                 <li class="search-title">
-                                    <i class="search-icon fa fa-line-chart"></i><span>Top</span>
+                                    <i class="search-icon fa fa-line-chart"></i><span>Trending</span>
                                 </li>
-                                <li class="suggest-item">
-                                    <i class="item-index">1</i>
-                                    <a href="" target="_blank"></a>
-                                </li>-->
+                                <li class="suggest-item" v-for="item in 3" :key="item.id">
+                                    <i class="item-index">{{ item }}</i>
+                                    <a href="" target="_blank">test {{ item }}</a>
+                                </li>
                             </ul>
                         </div>
                     </li>

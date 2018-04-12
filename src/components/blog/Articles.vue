@@ -253,8 +253,8 @@ export default {
         async getArticles() {
             try {
                 const res = await getArticles(this.pages.currentPage)
-                this.articles = res.data
                 this.loading = false
+                this.articles = res.data
             } catch(err) {
                 console.log('error occurs')
             }
@@ -265,10 +265,8 @@ export default {
 				const res = await myArticles(this.userid, this.pages.currentPage)
                 if(res.data.success) {
                     this.articles = res.data.articles
-                    this.loading = false
-                } else {
-                    this.loading = false
                 }
+                this.loading = false
             } catch(err) {
                 console.log('error occurs')
             }
@@ -279,10 +277,8 @@ export default {
                 const res = await myArticles(this.$route.params.id, this.pages.currentPage)
                 if(res.data.success) {
                     this.articles = res.data.articles
-                    this.loading = false
-                } else {
-                    this.loading = false
                 }
+                this.loading = false
             } catch(err) {
                 console.log('error occurs')
             }
@@ -298,9 +294,7 @@ export default {
                             this.articles.push(value)
                         }
                     } 
-                    this.loading = false
                 } else {
-                    this.loading = false
                     this.$notify({
                         title: 'Warning',
                         type: 'warning',
@@ -308,6 +302,7 @@ export default {
                         position: 'top-left'
                     })
                 }
+                this.loading = false
             } catch(err) {
                 console.log('error occurs')
             }

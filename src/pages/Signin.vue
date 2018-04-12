@@ -1,6 +1,6 @@
 <template>
     <div class="auth-container">
-        <div class="auth-form">
+        <div v-if="!isLogin" class="auth-form">
             <h1 class="title">Login</h1>
             <div class="input-group">
                 <div class="form-group">
@@ -42,6 +42,9 @@
                 <img title="GitHub" alt="GitHub" src="/static/github.svg" class="oauth-btn">
             </div>
         </div>
+        <div v-if="isLogin && displayNotice" class="login-notice">
+            <p class="login-text">you have login successfully, please continue...</P>
+        </div>
     </div>
 </template>
 <script>
@@ -56,7 +59,8 @@ export default {
             loginemail: '',
             loginpassword: '',
             /*login remember me*/
-            remember: false
+            remember: false,
+            displayNotice: false
         }
     },
     validations: {
@@ -68,6 +72,11 @@ export default {
             required,
             minLength: minLength(6)
         }
+    },
+    computed: {
+        ...mapGetters({
+            isLogin: 'getState'
+        })
     },
     methods: {
         ...mapActions([
@@ -100,7 +109,14 @@ export default {
                     })
                     if(this.$route.query.redirect) {
                         const path = decodeURIComponent(this.$route.query.redirect)
-                        this.$router.replace({ path: path })
+                        if(path === '/signin') {
+                            this.displayNotice = true
+                        } else {
+                            this.displayNotice = false
+                            this.$router.replace({ path: path })
+                        }
+                    } else {
+                        this.displayNotice = true
                     }
                 } else {
                     //notification
@@ -132,6 +148,22 @@ export default {
     bottom: 0;
     //background-image: url("/static/beach-background.jpg");
     cursor: pointer;
+    .login-notice {
+        position: relative;
+        padding: 2rem;
+        width: 26.5rem;
+        max-width: 100%;
+        font-size: 1.7rem;
+        text-align: center;
+        background-color: #fff;
+        border-radius: 5px;
+        box-sizing: border-box;
+        box-shadow: 0 3px 3px rgba(0,0,0,.4);
+        .login-text {
+            color: #67c23a;
+            font-size: inherit;
+        }
+    }
     .auth-form {
         position: relative;
         padding: 2rem;
