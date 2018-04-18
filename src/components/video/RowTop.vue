@@ -64,7 +64,9 @@ export default {
             border-radius: 4px;
             height: 22px;
             padding: 0 10px;
-            transition: all .2s;
+            &:hover {
+                box-shadow: 1px 1px 2px #ccc;
+            }
             .info {
                 display: inline-block;
                 vertical-align: top;
@@ -86,7 +88,9 @@ export default {
             border-radius: 4px;
             text-align: center;
             margin: 0 0 0 10px;
-            transition: all .2s;
+            &:hover {
+                box-shadow: 1px 1px 2px #ccc;
+            }
         }
     }
 }

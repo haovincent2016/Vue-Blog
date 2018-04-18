@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <slider v-if="size > 0" :sliders="sliders" :titles="titles"></slider>
+        <slider v-if="size === 1" :sliders="sliders" :titles="titles"></slider>
         <mt-swipe :auto="0" v-else>
             <mt-swipe-item v-for="banner in banners" :key="banner.id">
                 <img :src="banner" />
@@ -22,16 +22,12 @@ import { mapActions, mapGetters } from 'vuex'
 
 export default {
     created() {
-        if(window.screen.width > 420) {
-            this.size = 1
-        } else {
-            this.size = 0
-        }
+        this.checkDevice()
     },
     data() {
         return {
             /*screen size*/
-            size: -1,
+            size: null,
             /*which page retrieve article list*/
             sourcePage: 'home',
             sliders: [
@@ -50,6 +46,16 @@ export default {
                 { title: 'Slider three', sub: 'subtitle three' }
             ]
         }
+    },
+    methods: {
+        //check if user browse on mobile
+        checkDevice() {
+            if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+                this.size = 0
+            } else {
+                this.size = 1
+            }
+        },
     },
     components: {
         slider,

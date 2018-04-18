@@ -10,7 +10,7 @@
                 class="rank-item highlight">
                 <i class="num">{{ index + 1 }}</i>
                 <a class="info-wrap clearfix">
-                    <div class="lazy-img preview">
+                    <div class="preview">
                         <img alt="cover" :src="article.cover">
                     </div>
                     <div class="detail">
@@ -44,8 +44,8 @@
         </div>
         <div class="pop-pre">
             <img alt="cover" class="preview-img" :src="preview.cover">
-            <p class="excerpt" v-if="preview.type == 'markdown'" v-html="$options.filters.excerpt(preview.content)"></p>
-            <p class="excerpt" v-if="preview.type == 'richtext'" v-html="$options.filters.richtext(preview.content)"></p>
+            <p class="excerpt" v-if="preview.type == 'markdown'" v-html="$options.filters.convert(preview.content)"></p>
+            <p class="excerpt" v-if="preview.type == 'richtext'" v-html="preview.content"></p>
         </div>
     </div>
 </div>
@@ -78,20 +78,8 @@ export default {
         moment: function(date) {
             return moment(date).format("YYYY-M-D, h:mm:ss a")
         },
-        excerpt: function(content) {
-            if(content.length > 39) {
-                let excerpt = marked(content).slice(0, 40) + '...'
-                return excerpt
-            } else {
-                return marked(content)
-            }
-        },
-        richtext: function(content) {
-            if(content.length > 178) {
-                return content.slice(0, 179) + '...'
-            } else {
-                return content
-            }
+        convert: function(content) {
+            return marked(content)
         }
     },
     methods: {
@@ -299,21 +287,18 @@ export default {
         }
     }
     .pop-pre {
-        width: 100%;
-        height: 88px;
-        float: left;
-        margin-right: 8px;
+        display: flex;
         margin-top: 4px;
-        border-radius: 4px;
         img {
-            width: 46%;
+            flex: 1;
+            width: 100px;
             height: 70px;
         }
         .excerpt {
-            width: 50%;
-            margin: 8px 0 0 8px;
-            float: right;
-            height: 67px;
+            flex: 1;
+            margin: 8px 8px 0 8px;
+            line-height: 16px;
+            max-height: 64px;
             overflow: hidden;
         }
     }

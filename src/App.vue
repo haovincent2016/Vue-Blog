@@ -2,9 +2,11 @@
 <div class="wrapper">
     <blog-header v-if="!getAdmin"></blog-header>
     <router-view></router-view>
-    <div v-if="getModal === true" class="overlay">
-        <login-form></login-form>
-    </div>
+    <transition name="modal-fade">
+        <div v-if="getModal === true" class="overlay">
+            <login-form></login-form>
+        </div>
+    </transition>
 </div>
 </template>
 
@@ -50,6 +52,12 @@ export default {
 </script>
 
 <style lang="scss">
+.dplayer-setting-box {
+    width: 170px!important;
+}
+.dplayer-toggle > label {
+    border: 1px solid #666!important;
+}
 .container {
     position: relative;
     margin: 0 auto;
@@ -99,14 +107,11 @@ export default {
         opacity: 0.8;
     }
 }
-.v-fade-left-enter-active,
-.v-fade-left-leave-active,
-.v-fade-left-move {
-  transition: all .5s;
+
+.modal-fade-enter-active, .modal-fade-leave-active {
+	transition: opacity .5s;
 }
-.v-fade-left-enter,
-.v-fade-left-leave-to {
-  opacity: 0;
-  transform: translateX(-500px) scale(0.2);
+.modal-fade-enter, .modal-fade-leave-active {
+	opacity: 0;
 }
 </style>

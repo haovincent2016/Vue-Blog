@@ -200,10 +200,8 @@ export default {
 <style lang="scss" scoped>
 .collect-modal {
     display: flex;
-    -webkit-box-align: center;
     align-items: center;
     justify-content: center;
-    position: fixed;
     position: fixed;
     top: 0;
     left: 0;

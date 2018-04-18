@@ -13,7 +13,7 @@ export default {
 	data () {
 		return {
 			categories: [
-				'Music Video', 'Movie', 'TV Series'
+				'Music Video'
 			]
 		}
 	},

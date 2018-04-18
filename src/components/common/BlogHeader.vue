@@ -10,16 +10,13 @@
                     <div class="main-nav-list" @click="isShown=!isShown">
                         <!--mobile header-->
                         <div class="phone-show">
-                            <router-link :to="{name: 'home'}">Home</router-link>
+                            <div class="title">Menu</div>
                             <div v-show="isShown === false" class="fa fa-caret-down fa-leftmargin"></div>
                             <div v-show="isShown === true" class="fa fa-caret-up fa-leftmargin"></div>
                         </div>
                         <div class="computer-hide" :class="{ menushow: isShown}">
                             <li class="nav-item">
                                 <router-link :to="{name: 'home'}">Home</router-link>
-                            </li>
-                            <li class="nav-item">
-                                <a >Articles</a>
                             </li>
                             <li class="nav-item">
                                 <router-link :to="{name: 'video'}">Video</router-link>
@@ -520,9 +517,8 @@ export default {
         cursor: pointer;
         height: 5rem;
         display: flex;
-        -webkit-box-align: center;
         align-items: center;
-        color: #00a1d6;
+        color: #909090;
         font-size: 1.3rem;
         justify-content: center;
         padding: 0 0.5rem;

@@ -12,19 +12,19 @@
                         <span class="name"  @click="userPage"><a>{{ user.name }}</a></span>
                         <span class="tag">Author</span>
                         <!-- subscribe/unsubscribe -->
-                        <a class="btn btn-disabled follow" v-show="disabled" @click="notice"><span>Subscribe</span></a>
-                        <a class="btn btn-success follow" v-show="!substate && !disabled" @click="subscribe"><span>Subscribe</span></a>
-                        <a class="btn btn-success follow" v-show="substate" @click="unsubscribe"><span>Unsubscribe</span></a>
-                        <!-- article stats -->
-                        <div class="metainfo">
-                            <span class="publish-time">Edited - {{ article.update_at | moment }}</span>
-                            <span class="wordage">Words {{ article.words }}</span>
-                            <span class="views-count">Views {{ article.view }}</span>
-                            <span class="comments-count">Comments {{ article.comment }}</span>
-                            <span class="likes-count">Likes {{ likes }}</span>
-                        </div>
+                        <a class="btn btn-disabled follow" v-if="disabled" @click="notice"><span>Subscribe</span></a>
+                        <a class="btn btn-success follow" v-if="!substate && !disabled" @click="subscribe"><span>Subscribe</span></a>
+                        <a class="btn btn-success follow" v-if="substate" @click="unsubscribe"><span>Unsubscribe</span></a>
                     </div>
                     <!-- todo: add edit button if its author -->
+                </div>
+                <!-- article stats -->
+                <div class="metainfo">
+                    <span class="publish-time">Edited - {{ article.update_at | moment }}</span>
+                    <span class="wordage">Words {{ article.words }}</span>
+                    <span class="views-count">Views {{ article.view }}</span>
+                    <span class="comments-count">Comments {{ article.comment }}</span>
+                    <span class="likes-count">Likes {{ likes }}</span>
                 </div>
 
                 <!-- article content -->
@@ -51,9 +51,9 @@
                         <img :src="user.avatar" alt="avatar">
                     </a>
                     <!--show if article is written by login user-->
-                    <a class="btn btn-disabled follow" v-show="disabled" @click="notice"><span>Subscribe</span></a>          
-                    <a class="btn btn-success follow" v-show="!substate && !disabled" @click="subscribe"><span>Subscribe</span></a>
-                    <a class="btn btn-success follow" v-show="substate" @click="unsubscribe"><span>Unsubscribe</span></a>
+                    <a class="btn btn-disabled follow" v-if="disabled" @click="notice"><span>Subscribe</span></a>          
+                    <a class="btn btn-success follow" v-if="!substate && !disabled" @click="subscribe"><span>Subscribe</span></a>
+                    <a class="btn btn-success follow" v-if="substate" @click="unsubscribe"><span>Unsubscribe</span></a>
                     <a class="title" @click="userPage" target="_blank">{{ user.name }}</a>
                     
                     <p>Subscribed by {{ subcount | number }}</p>
@@ -312,17 +312,16 @@ export default {
             margin-bottom: 30px;
             .title {
                 word-break: break-word;
-                margin: 20px 0 0;
+                margin: 20px 0;
                 font-family: Microsoft YaHei,WenQuanYi Micro Hei,sans-serif;
                 font-size: 34px;
                 font-weight: 700;
                 line-height: 1.3;
             }
             .author {
-                margin: 30px 0 40px;
+                display: flex;
+                align-items: center;
                 .avatar {
-                    display: inline-block;
-                    margin: 0 5px 0 0;
                     width: 42px;
                     height: 42px;
                     cursor: pointer;
@@ -330,27 +329,24 @@ export default {
                         width: 100%;
                         height: 100%;
                         border: 1px solid #ddd;
+                        box-shadow: 1px 1px 2px #ccc;
                         border-radius: 50%;
-                        vertical-align: middle;
                     }
                 }
                 .info {
-                    vertical-align: middle;
-                    display: inline-block;
-                    margin-left: 8px;
                     .name {
-                        margin-left: 3px;
-                        margin-right: 3px;
                         font-size: 16px;
-                        vertical-align: middle;
                         cursor: pointer;
+                        margin-left: 5px;
                     }
                     .tag {
-                        padding: 2px 3px;
+                        padding: 3px 3px;
                         font-size: 12px;
-                        color: #ea6f5a;
-                        border: 1px solid #ea6f5a;
-                        border-radius: 3px;
+                        color: #fff;
+                        background: #ea6f5a;
+                        font-weight: 400;
+                        line-height: normal; 
+                        box-shadow: 1px 1px 2px #ccc;
                     }
                     .btn-disabled {
                         border-radius: 40px;
@@ -367,20 +363,22 @@ export default {
                         }
                     }
                     .follow {
-                        padding: 1px 7px 1px 5px;
-                        font-size: 11px;
+                        padding: 2px 3px;
+                        font-size: 12px;
                         border-color: #42c02e;
                         font-weight: 400;
-                        line-height: normal;    
+                        line-height: normal;   
                     }
-                    .metainfo {
-                        margin-top: 8px;
-                        font-size: 12px;
-                        color: #969696;
-                        span {
-                            padding: 0 5px;
-                        }
-                    }
+                }
+            }
+            .metainfo {
+                display: flex;
+                flex-wrap: wrap;
+                margin: 5px 0 30px 0;
+                font-size: 12px;
+                color: #969696;
+                span {
+                    padding: 0 5px;
                 }
             }
             .article-cover {

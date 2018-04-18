@@ -7,40 +7,38 @@
     </div>
     <ul class="article-list">
         <li v-for="article in articles" :key="article.id">
-            <a class="wrap-img" target="_blank">
-                <img :src="article.cover" alt="cover">
+            <a class="wrap-img" target="_blank" :href="article.cover">
+                <img :src="article.cover" alt="article cover">
             </a>
+            <div class="author">
+                <a class="avatar" target="_blank" @click="userPage(article)">
+                    <img :src="article.author.avatar" alt="author">
+                </a>      
+                <div class="name">
+                    <a target="_blank" @click="userPage(article)">{{ article.author.name }}</a>
+                    <span class="time"> {{ article.created_at | moment }}</span>
+                </div>
+            </div>
             <div class="content">
-                <div class="author">
-                    <a class="avatar" target="_blank" >
-                        <img :src="article.author.avatar" alt="author">
-                    </a>      
-                    <div class="name">
-                        <a target="_blank" @click="userPage(article)">{{ article.author.name }}</a>
-                        <span class="time"> {{ article.created_at | moment }}</span>
-                    </div>
-                </div>
                 <a class="title" target="_blank" @click="showDetail(article)">{{ article.title }}</a>
-
-                <div v-if="article.type == 'markdown'" @click="showDetail(article)" class="abstract" v-html="$options.filters.partial(article.content)"></div>
-                <div v-if="article.type == 'richtext'" @click="showDetail(article)" class="abstract" v-html="$options.filters.richtext(article.content)"></div>
-
-                <div class="meta">
-                    <a class="collection-tag" target="_blank" @click="tagPage(article.tag._id)">{{ article.tag.title }}</a>
-                    <span><i class="fa fa-eye"></i> {{ article.view }}</span> 
-                    <span><i class="fa fa-commenting"></i> {{ article.comment }}</span>     
-                    <span><i class="fa fa-heart-o"></i> {{ article.like }}</span>
-                    <!--add to collection button-->
-                    <span v-if="source==='home' || source==='search'" class="action" @click="addArticle(article)"><i class="fa fa-bookmark-o"></i> Add</span>
-                    <span v-if="login">
-                        <!--edit article button-->
-                        <span v-if="source==='author'" class="action" @click="editArticle(article)"><i class="fa fa-pencil-square-o"></i> Edit</span>
-                        <!--delete article button-->
-                        <span v-if="source==='author'" class="action" @click="deleteArticle(article)"><i class="fa fa-trash-o"></i> Delete</span>
-                        <!--remove article from collection button-->
-                        <span v-if="isOwner && source==='collection'" class="action" @click="removeCollection(article)"><i class="fa fa-trash-o"></i> Remove</span>
-                    </span>
-                </div>
+                <div v-if="article.type == 'markdown'" @click="showDetail(article)" class="abstract" v-html="$options.filters.markdown(article.content)"></div>
+                <div v-if="article.type == 'richtext'" @click="showDetail(article)" class="abstract" v-html="article.content"></div>
+            </div>
+            <div class="meta">
+                <a class="collection-tag" target="_blank" @click="tagPage(article.tag._id)">{{ article.tag.title }}</a>
+                <span><i class="fa fa-eye"></i> {{ article.view }}</span> 
+                <span><i class="fa fa-commenting"></i> {{ article.comment }}</span>     
+                <span><i class="fa fa-heart-o"></i> {{ article.like }}</span>
+                <!--add to collection button-->
+                <span v-if="source==='home' || source==='search'" class="action" @click="addArticle(article)"><i class="fa fa-bookmark-o"></i> Add</span>
+                <span v-if="login">
+                    <!--edit article button-->
+                    <span v-if="source==='author'" class="action" @click="editArticle(article)"><i class="fa fa-pencil-square-o"></i> Edit</span>
+                    <!--delete article button-->
+                    <span v-if="source==='author'" class="action" @click="deleteArticle(article)"><i class="fa fa-trash-o"></i> Delete</span>
+                    <!--remove article from collection button-->
+                    <span v-if="isOwner && source==='collection'" class="action" @click="removeCollection(article)"><i class="fa fa-trash-o"></i> Remove</span>
+                </span>
             </div>
         </li>
     </ul>
@@ -146,20 +144,9 @@ export default {
         moment: function(date) {
             return moment(date).calendar()
         },
-        partial: function(content) {
-            if(content.length > 70) {
-                return marked(content).slice(0, 71)
-            } else {
-                return marked(content)
-            }
+        markdown: function(content) {
+            return marked(content)
         },
-        richtext: function(content) {
-            if(content.length > 240) {
-                return content.slice(0, 241)
-            } else {
-                return content
-            }
-        }
     },
     methods: {
         userPage(article) {
@@ -222,7 +209,7 @@ export default {
                     }   
                 })
                 .catch(err => {
-                    console.log('error occurs')
+                    console.log(err.message)
                 })
         },
         removeCollection(article) {
@@ -256,7 +243,7 @@ export default {
                 this.loading = false
                 this.articles = res.data
             } catch(err) {
-                console.log('error occurs')
+                console.log(err.message)
             }
         },
         /*from user dashboard*/
@@ -268,7 +255,7 @@ export default {
                 }
                 this.loading = false
             } catch(err) {
-                console.log('error occurs')
+                console.log(err.message)
             }
         },
         /*from public user page*/
@@ -280,7 +267,7 @@ export default {
                 }
                 this.loading = false
             } catch(err) {
-                console.log('error occurs')
+                console.log(err.message)
             }
         },
         async getTagArticles() {
@@ -304,7 +291,7 @@ export default {
                 }
                 this.loading = false
             } catch(err) {
-                console.log('error occurs')
+                console.log(err.message)
             }
         },
         //search total page not correct
@@ -325,7 +312,7 @@ export default {
                     this.loading = false
                     this.$store.dispatch('searchState', {state: false, text: this.searchText})         
                 } catch(err) {
-                    console.log('error occurs')
+                    console.log(err.message)
                 }
             }
         },
@@ -335,7 +322,7 @@ export default {
             try {
                 await addView(this.article_id)
             } catch(err) {
-                console.log('error occurs')
+                console.log(err.message)
             }  
         },
         async getPages() {
@@ -348,7 +335,7 @@ export default {
                     this.pages.totalPages = Math.floor((res.data - 1) / 7) + 1
                 }
             } catch(err) {
-                console.log('error occurs')
+                console.log(err.message)
             }
         },
         /*get user articles total pages*/
@@ -370,7 +357,7 @@ export default {
                     }
                 }
             } catch(err) {
-                console.log('error occurs')
+                console.log(err.message)
             }
         },
         async getSearchPages() {
@@ -382,7 +369,7 @@ export default {
                     this.pages.totalPages = Math.floor((res.data - 1) / 7) + 1
                 }
             } catch(err) {
-                console.log('error occurs')
+                console.log(err.message)
             }
         },
         /*article operation, currently implemented in admin panel*/
@@ -390,14 +377,14 @@ export default {
             try {
 
             } catch(err) {
-                console.log('error occurs')
+                console.log(err.message)
             }
 		},
 		async deleteArticle(article) {
             try {
 
             } catch(err) {
-                console.log('error occurs')
+                console.log(err.message)
             }
 		}
     }
@@ -444,20 +431,13 @@ export default {
     padding: 0;
     list-style: none;
     li {
-        display: list-item;
-        line-height: 20px;
         position: relative;
-        width: 100%;
         margin: 0 0 8px 0;
         padding: 0 2px 8px 0;
         border-bottom: 1px solid #f0f0f0;
-        word-wrap: break-word;
-        height: 190px;
-        overflow: hidden;
         .wrap-img {
             position: absolute;
-            top: 50%;
-            margin-top: -68px;
+            top: 24%;
             right: 0;
             width: 180px;
             height: 120px;
@@ -469,45 +449,47 @@ export default {
                 width: 100%;
                 height: 100%;
                 border-radius: 4px;
-                border: 1px solid #f0f0f0;
+                &:hover {
+                    box-shadow: 1px 1px 2px #ccc;
+                }
+            }
+        }
+        .author {
+            margin-bottom: 14px;
+            font-size: 14px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            align-items: center;
+            .name {
+                .time {
+                    padding: 0 6px;
+                    font-size: 13px;
+                    color: grey;
+                }
+            }
+            .avatar {
+                margin: 0 5px 0 0;
+                width: 32px;
+                height: 32px;
+                cursor: pointer;
+                img {
+                    width: 100%;
+                    height: 100%;
+                    border: 1px solid #ddd;
+                    border-radius: 50%;
+                }
             }
         }
         .content {
-            padding-right: 200px;
+            display: flex;
+            flex-direction: column;
+            width: 70%;
             @media screen and (max-width: 420px) {
-                padding-right: 135px;
-            }
-            .author {
-                margin-bottom: 14px;
-                font-size: 14px;
-                .name {
-                    display: inline-block;
-                    vertical-align: middle;
-                    .time {
-                        padding: 0 6px;
-                        font-size: 13px;
-                        color: grey;
-                    }
-                }
-                .avatar {
-                    display: inline-block;
-                    vertical-align: middle;
-                    margin: 0 5px 0 0;
-                    width: 32px;
-                    height: 32px;
-                    cursor: pointer;
-                    img {
-                        width: 100%;
-                        height: 100%;
-                        border: 1px solid #ddd;
-                        border-radius: 50%;
-                        vertical-align: middle;
-                    }
-                }
+                width: 50%;
             }
             .title {
                 margin: 4px 0;
-                display: inherit;
                 font-size: 18px;
                 font-weight: 700;
                 line-height: 1.5;
@@ -517,36 +499,34 @@ export default {
                 }
             }
             .abstract {
-                margin: 0 0 8px;
                 font-size: 14px;
                 line-height: 24px;
+                max-height: 96px;
+                overflow: hidden;
                 cursor: pointer;
             }
-            .meta {
-                padding-right: 0;
-                font-size: 13px;
-                font-weight: 300;
-                line-height: 23px;
-                position: absolute;
-                top: 87%;
-                z-index: 200;
-                background: #fff;
-                .action {
-                    cursor: pointer;
+        }
+        .meta {
+            padding-right: 0;
+            font-size: 13px;
+            font-weight: 300;
+            line-height: 23px;
+            position: relative;
+            .action {
+                cursor: pointer;
+            }
+            span {
+                margin: 0 5px;
+                color: #8590a6;
+                &:hover {
+                    color: #5b5b5b;
                 }
-                span {
-                    margin: 0 5px;
-                    color: #8590a6;
-                    &:hover {
-                        color: #5b5b5b;
-                    }
-                }
-                .collection-tag {
-                    padding: 2px 6px;
-                    color: #ea6f5a;
-                    border: 1px solid rgba(236,97,73,.7);
-                    border-radius: 3px;
-                }
+            }
+            .collection-tag {
+                padding: 2px 6px;
+                color: #ea6f5a;
+                border: 1px solid rgba(236,97,73,.7);
+                border-radius: 3px;
             }
         }
     }

@@ -24,13 +24,14 @@
 				class="slide-right">
 				<i class="fa fa-chevron-right fa-2x fa-fw icon-chevron-right"></i>
 			</span>
-			<div
-				class="slide"
-				v-show="index === current"
+			<transition name="fade">
+			<div class="slide"
+				v-if="index === current"
 				v-for="(item, index) in sliders"
 				:key="index">
-					<img :src="item.imgUrl" alt="slider" />
+				<img :src="item.imgUrl" alt="slider" />	
 			</div>
+			</transition>
 			<ul class="dot-list">
 				<li class="dot-item"
 					v-for="(item, index) in 3"
@@ -232,5 +233,12 @@ export default {
 	margin-left: -15px;
 	margin-top: -15px;
 	color: #ecf0f1;
+}
+
+.fade-enter-active, .fade-leave-active {
+	transition: opacity .5s;
+}
+.fade-enter, .fade-leave-active {
+	opacity: 0;
 }
 </style>
