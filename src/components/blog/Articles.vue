@@ -226,11 +226,11 @@ export default {
                         this.getCollectionArticles()
                     } else {
                         this.$notify({
-                                title: 'Warning',
-                                type: 'warning',
-                                message: res.data.message,
-                                position: 'top-left'
-                            })
+                            title: 'Warning',
+                            type: 'warning',
+                            message: res.data.message,
+                            position: 'top-left'
+                        })
                     }
                 })
                 .catch(err => {
@@ -501,7 +501,7 @@ export default {
             .abstract {
                 font-size: 14px;
                 line-height: 24px;
-                max-height: 96px;
+                max-height: 95px;
                 overflow: hidden;
                 cursor: pointer;
             }

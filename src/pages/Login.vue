@@ -8,7 +8,7 @@
         <div class="form-container">
             <div class="admin-name">
                 <i class="fa fa-user"></i>
-                <input placeholder="admin username" type="text" v-model="name" name="name">
+                <input placeholder="admin email" type="email" v-model="email" name="email">
             </div>
             <div class="admin-password">
                 <i class="fa fa-lock"></i>
@@ -53,11 +53,11 @@
 
 <script>
 import { mapActions } from 'vuex'
-import { loginUser } from '@/helper/adminHelper'
+import { loginUser, registerUser } from '@/helper/adminHelper'
 export default {
 	data () {
 		return {
-            name: '',
+            email: '',
             password: '',
             rname: '',
             remail: '',
@@ -71,7 +71,7 @@ export default {
         ]),
         async adminLogin() {
             try {
-                const res = await loginUser({ name: this.name, password: this.password })
+                const res = await loginUser({ email: this.email, password: this.password })
                 if(res.data.success) {
                     this.$notify({
                         title: 'Success',
@@ -79,9 +79,8 @@ export default {
                         message: res.data.message,
                         position: 'top-left'
                     })
-                    if(!localStorage.getItem('admintoken')) {
-                        localStorage.setItem('admintoken', res.data.admintoken)
-                    } 
+                    //always set the newer token
+                    localStorage.setItem('admintoken', res.data.admintoken)
                     this.$router.push({ path: '/adminpanel' })
                     this.changeAdmin(true)
                 } else {

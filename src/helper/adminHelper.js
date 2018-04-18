@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export const registerUser = (request) => {
-    const admintoken = localStorage.getItem('admintoken')
+    let admintoken = localStorage.getItem('admintoken')
     if(!!admintoken) {
         localStorage.removeItem('admintoken')
         return axios.post('/admin/register', request)
@@ -10,14 +10,15 @@ export const registerUser = (request) => {
 }
 
 export const loginUser = (request) => {
-    const admintoken = localStorage.getItem('admintoken')
+    let admintoken = localStorage.getItem('admintoken')
     if(!!admintoken) {
         return axios({
             method: 'post',
             url: '/admin/loginJWT',
             headers: {
                 authorization: admintoken
-            }
+            },
+            data: request
         })
     }
     return axios({

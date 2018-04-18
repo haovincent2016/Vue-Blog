@@ -298,7 +298,7 @@ export default {
             flex: 1;
             margin: 8px 8px 0 8px;
             line-height: 16px;
-            max-height: 64px;
+            max-height: 63px;
             overflow: hidden;
         }
     }
