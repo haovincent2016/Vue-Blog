@@ -5,9 +5,9 @@
         <p>Return to main search page</p>
         <button class="btn-cancel" @click="resetSearch()">Return</button>
     </div>
-    <ul class="article-list">
-        <li v-for="article in articles" :key="article.id">
-            <a class="wrap-img" target="_blank" :href="article.cover">
+    <ul class="article-list" ref="list"> 
+        <li v-for="(article, index) in articles" :key="article.id">
+            <a class="wrap-img" v-if="selectedArticle != index" target="_blank" :href="article.cover">
                 <img :src="article.cover" alt="article cover">
             </a>
             <div class="author">
@@ -19,26 +19,29 @@
                     <span class="time"> {{ article.created_at | moment }}</span>
                 </div>
             </div>
-            <div class="content">
+            <div class="content" :class="{full: selectedArticle == index}">
                 <a class="title" target="_blank" @click="showDetail(article)">{{ article.title }}</a>
-                <div v-if="article.type == 'markdown'" @click="showDetail(article)" class="abstract" v-html="$options.filters.markdown(article.content)"></div>
-                <div v-if="article.type == 'richtext'" @click="showDetail(article)" class="abstract" v-html="article.content"></div>
+                <div class="abstract" v-if="selectedArticle != index">{{ article.content | rmmd }}
+                    <span class="more" v-if="hasMore[index]" @click="showFull(index)">More</span>
+                </div>
+                <div v-if="article.type == 'markdown' && selectedArticle == index" class="full" v-html="$options.filters.markdown(article.content)"></div>
+                <div v-if="article.type == 'richtext' && selectedArticle == index" class="full" v-html="article.content"></div>
             </div>
-            <div class="meta">
+            <div class="meta" :class="{fixed: selectedArticle == index}">
                 <a class="collection-tag" target="_blank" @click="tagPage(article.tag._id)">{{ article.tag.title }}</a>
                 <span><i class="fa fa-eye"></i> {{ article.view }}</span> 
                 <span><i class="fa fa-commenting"></i> {{ article.comment }}</span>     
                 <span><i class="fa fa-heart-o"></i> {{ article.like }}</span>
                 <!--add to collection button-->
                 <span v-if="source==='home' || source==='search'" class="action" @click="addArticle(article)"><i class="fa fa-bookmark-o"></i> Add</span>
-                <span v-if="login">
-                    <!--edit article button-->
-                    <span v-if="source==='author'" class="action" @click="editArticle(article)"><i class="fa fa-pencil-square-o"></i> Edit</span>
-                    <!--delete article button-->
-                    <span v-if="source==='author'" class="action" @click="deleteArticle(article)"><i class="fa fa-trash-o"></i> Delete</span>
-                    <!--remove article from collection button-->
-                    <span v-if="isOwner && source==='collection'" class="action" @click="removeCollection(article)"><i class="fa fa-trash-o"></i> Remove</span>
-                </span>
+                <!--edit article button-->
+                <span v-if="login && source==='author'" class="action" @click="editArticle(article)"><i class="fa fa-pencil-square-o"></i> Edit</span>
+                <!--delete article button-->
+                <span v-if="login && source==='author'" class="action" @click="deleteArticle(article)"><i class="fa fa-trash-o"></i> Delete</span>
+                <!--remove article from collection button-->
+                <span v-if="login && isOwner && source==='collection'" class="action" @click="removeCollection(article)"><i class="fa fa-trash-o"></i> Remove</span>
+                <span v-if="selectedArticle == index" class="meta-title" @click="showDetail(article)">{{ article.title }}</span>
+                <span v-if="selectedArticle == index" class="pull-up" @click="showAbstract(index)"><i class="fa fa-chevron-up"></i></span>
             </div>
         </li>
     </ul>
@@ -61,6 +64,7 @@
 </template>
 <script>
 import moment from 'moment'
+import removeMd from 'remove-markdown'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import { mapGetters } from 'vuex'
 import Pagination from '@/components/common/Pagination'
@@ -121,12 +125,29 @@ export default {
                 totalPages: 1
             },
             /*display collection popup*/
-            isDisplay: false
+            isDisplay: false,
+            /* article needs more space to show all */
+            selectedArticle: -1,
+            contentTop: [],
+            contentHeight: [],
+            hasMore: [],
+            showMore: [],
+            locked: false,
+            prevIndex: -1
         }
     },
     props: [
         'source'
     ],
+    watch: {
+        loading: function(val) {
+            if(!val) {
+                this.$nextTick(() => {
+                    this.getContentHeight()
+                })
+            }
+        }
+    },
     computed: {
         ...mapGetters({
             userid: 'getID',
@@ -147,8 +168,35 @@ export default {
         markdown: function(content) {
             return marked(content)
         },
+        encode: function(str) {
+            return str.replace(/(<([^>]+)>)/ig, "")
+        },
+        rmmd: function(str) {
+            return removeMd(str)
+        }
     },
     methods: {
+        trackScroll() {
+        },
+        //prevent 2 article showFull at same time.
+        showFull(index) {
+            if(!this.locked) {
+                this.selectedArticle = index
+                this.$set(this.hasMore, index, false)
+                this.prevIndex = index
+            } else {
+                this.showAbstract(this.prevIndex)
+                this.selectedArticle = index
+                this.$set(this.hasMore, index, false)
+                this.prevIndex = index
+            }
+            this.locked = true 
+        },
+        showAbstract(index) {
+            this.selectedArticle = -1
+            this.$set(this.hasMore, index, true)
+            this.locked = false
+        },
         userPage(article) {
             let path = article.author._id
             this.$router.push({ path: `/userpage/${path}` })
@@ -237,11 +285,28 @@ export default {
                     console.log(err.message)
                 })
         },
+        //get real height of each article content
+        getContentHeight() {
+            const listArray = Array.from(this.$refs.list.children)
+            //console.log(listArray)
+            listArray.forEach((item, index) => {
+                this.contentHeight[index] = item.children[2].children[1].scrollHeight
+            })
+            this.contentHeight.forEach((item, index) => {
+                if(item > 136) {
+                    this.hasMore.push(true)
+                } else {
+                    this.hasMore.push(false)
+                }
+            })
+            //console.log(this.contentHeight)
+            this.trackScroll()
+        },
         async getArticles() {
             try {
                 const res = await getArticles(this.pages.currentPage)
-                this.loading = false
                 this.articles = res.data
+                this.loading = false
             } catch(err) {
                 console.log(err.message)
             }
@@ -455,7 +520,7 @@ export default {
             }
         }
         .author {
-            margin-bottom: 14px;
+            margin-bottom: 8px;
             font-size: 14px;
             display: flex;
             flex-wrap: wrap;
@@ -485,6 +550,7 @@ export default {
             display: flex;
             flex-direction: column;
             width: 70%;
+            min-height: 136px;
             @media screen and (max-width: 420px) {
                 width: 50%;
             }
@@ -502,32 +568,67 @@ export default {
                 font-size: 14px;
                 line-height: 24px;
                 max-height: 95px;
+                margin-bottom: 6px;
                 overflow: hidden;
                 cursor: pointer;
-            }
-        }
-        .meta {
-            padding-right: 0;
-            font-size: 13px;
-            font-weight: 300;
-            line-height: 23px;
-            position: relative;
-            .action {
-                cursor: pointer;
-            }
-            span {
-                margin: 0 5px;
-                color: #8590a6;
-                &:hover {
-                    color: #5b5b5b;
+                .more {
+                    z-index: 100;
+                    position: absolute;
+                    right: 30%;
+                    bottom: 15.5%;
+                    color: #00a1d6;
+                    background: #fff;
+                    padding: 0 6px;
+                    &:hover {
+                        background: #eee;
+                        color: #666;
+                        border-radius: 8px;
+                    }
+                    @media screen and (max-width: 420px) {
+                        right: 50%;
+                    }
                 }
             }
+        }
+        .full {
+            width: 100%;
+        }
+        .meta {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+            background: #fff;
             .collection-tag {
                 padding: 2px 6px;
                 color: #ea6f5a;
                 border: 1px solid rgba(236,97,73,.7);
                 border-radius: 3px;
             }
+            span {
+                margin: 3px 10px;
+                color: #8590a6;
+                &:hover {
+                    color: #5b5b5b;
+                }
+            }
+            .action, .pull-top {
+                cursor: pointer;
+            }
+            .meta-title {
+                cursor: pointer;
+                color: #00a1d6;
+            }
+        }
+        .fixed {
+            font-size: 13px;
+            padding: 8px;
+            position: fixed; 
+            right: 0; 
+            left: 0; 
+            bottom: 0; 
+            z-index: 5;
+            box-shadow: 0 -1px 3px rgba(26, 26, 26, 0.1);
         }
     }
 }

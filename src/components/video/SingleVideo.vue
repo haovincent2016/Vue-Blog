@@ -2,7 +2,7 @@
 <div class="video-container">
   <div id="dplayer"></div>
   <div class="danmaku-wrapper">
-    <div class="danmaku-info">Total 100 items<i class="fa fa-bars"></i></div>
+    <div class="danmaku-info">Total {{danmakus.length}} items<i class="fa fa-bars"></i></div>
     <div class="danmaku-list">
       <div class="list-header">
         <span class="time">Time</span>
@@ -11,7 +11,7 @@
       </div>
       <ul class="list-content">
         <li class="list-item" v-for="(danmaku, index) in danmakus" :key="index">
-          <span class="item-time">{{ danmaku.time | number }}</span>
+          <span class="item-time">{{ danmaku.time | time }}</span>
           <span class="item-content">{{ danmaku.text }}</span>
           <span class="item-post">{{ danmaku.date | moment }}</span>
         </li>
@@ -20,16 +20,17 @@
   </div>
   <!-- always show danmaku input row -->
   <div class="danmaku-post">
-    <input class="danmaku-input" v-model="content" placeholder="Post danmaku here~">
+    <input class="danmaku-input" v-model="content" placeholder="Post danmaku here~" @keyup.enter="sendDanmaku">
     <div class="danmaku-button" @click="sendDanmaku">Send</div>
   </div>
 </div>
 </template>
 
 <script>
+import '@/assets/js/DPlayer.min.js'
+import '@/assets/css/DPlayer.min.css'
 import moment from 'moment'
-import DPlayer from '../../../node_modules/dplayer/dist/DPlayer.min.js'
-import '../../../node_modules/dplayer/dist/DPlayer.min.css'
+import { mapGetters } from 'vuex'
 
 let dp
 export default {
@@ -42,16 +43,18 @@ export default {
       logo: '/static/xiaomai.png',
       screenshot: true,
       video: this.options,
+      isLogin: this.login,
       danmaku: {
         id: this.id,
         api: 'http://localhost:3001/d/',
         token: 'lolnewtoken',
         maximum: 100,
-        user: 'vincent',
+        user: this.userid,
         bottom: '15%'
       }
     })
     dp.on('danmaku_send', this.getDanmakus)
+    dp.on('require_login', this.displayLogin)
     this.getDanmakus()
   },
   data () {
@@ -63,15 +66,50 @@ export default {
       time: 0
     }
   },
+  watch: {
+    //whenever login state changed, re-create dplayer
+    login: function(newVal, oldVal) {
+      dp = new DPlayer({
+        container: document.getElementById('dplayer'),
+        logo: '/static/xiaomai.png',
+        screenshot: true,
+        video: this.options,
+        isLogin: this.login,
+        danmaku: {
+          id: this.id,
+          api: 'http://localhost:3001/d/',
+          token: 'lolnewtoken',
+          maximum: 100,
+          user: this.userid,
+          bottom: '15%'
+        }
+      })
+      dp.on('danmaku_send', this.getDanmakus)
+      dp.on('require_login', this.displayLogin)
+    }
+  },
   filters: {
-    number: function(val) {
-      return val.toFixed(1)
-    },
     moment: function(date) {
       return moment(date).format('MM-DD, hh:mm')
     },
+    //00:00
+    time: function(seconds) {
+      const add = (num) => num < 10 ? '0' + num : '' + num;
+      const min = parseInt(seconds / 60);
+      const sec = parseInt(seconds - min * 60);
+      return add(min) + ':' + add(sec);
+    },
+  },
+  computed: {
+    ...mapGetters({
+      userid: 'getID',
+      login: 'getState'
+    })
   },
   methods: {
+    displayLogin() {
+      this.$store.dispatch('displayModal', { display: true, login: 'login' })
+    },
     checkVideo() {
       let index = this.$route.params.id
       switch(index) {
@@ -145,46 +183,51 @@ export default {
         if(res.data.code == 0) {
           this.danmakus = res.data.danmaku
         }
-       })
+      })
     },
     sendDanmaku() {
-      //get current video playing time
-      this.time = dp.video.currentTime
-      if(this.content) {
-        this.$http.post('/d/v2', { player: this.id, author: 'vincent', time: this.time, text: this.content, color: '#fff', type: 'right', token: 'lolnewtoken'}).then(res => {
-          if(res.data.code == 0) {
-            this.$notify({
-              title: 'Success',
-              type: 'success',
-              message: 'you have sent danmaku~',
-              position: 'top-left'
-            })
-            //draw danmaku into player
-            let dan = {
-              text: res.data.data.text,
-              color: res.data.data.color,
-              type: res.data.data.type,
-              border: "2px solid #b7daff"
+      //check if user login
+      if(this.login) {
+        //get current video playing time
+        this.time = dp.video.currentTime
+        if(this.content) {
+          this.$http.post('/d/v2', { player: this.id, author: this.userid, time: this.time, text: this.content, color: '#fff', type: 'right', token: 'lolnewtoken'}).then(res => {
+            if(res.data.code == 0) {
+              this.$notify({
+                title: 'Success',
+                type: 'success',
+                message: 'you have sent danmaku~',
+                position: 'top-left'
+              })
+              //draw danmaku into player
+              let dan = {
+                text: res.data.data.text,
+                color: res.data.data.color,
+                type: res.data.data.type,
+                border: "2px solid #b7daff"
+              }
+              dp.danmaku.draw(dan)
+              this.getDanmakus()
+            } else {
+              this.$notify({
+                title: 'Warning',
+                type: 'warning',
+                message: 'failed to send danmaku~',
+                position: 'top-left'
+              })
             }
-            dp.danmaku.draw(dan)
-            this.getDanmakus()
-          } else {
-            this.$notify({
-              title: 'Warning',
-              type: 'warning',
-              message: 'failed to send danmaku~',
-              position: 'top-left'
-            })
-          }
-          this.content = ''
-        })
+            this.content = ''
+          })
+        } else {
+          this.$notify({
+            title: 'Warning',
+            type: 'warning',
+            message: 'please write something first~',
+            position: 'top-left'
+          })
+        }
       } else {
-        this.$notify({
-          title: 'Warning',
-          type: 'warning',
-          message: 'please write something first~',
-          position: 'top-left'
-        })
+        this.displayLogin()
       }
     }
   }

@@ -22,6 +22,7 @@
     "moment": "^2.18.1",
     "multer": "^1.3.0",
     "quill": "^1.3.2",
+    "remove-markdown": "^0.2.2",
     "simplemde": "^1.11.2",
     "underscore": "^1.8.3",
     "vue": "^2.5.2",
