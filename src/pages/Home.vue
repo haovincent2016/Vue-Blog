@@ -6,11 +6,14 @@
                 <img :src="banner" />
             </mt-swipe-item>
         </mt-swipe>
-        <div class="left-column">
-            <div class="split-line"></div>
-            <list :source="sourcePage"></list>
+        <div class="main-content">
+            <div class="article-wrapper">
+                <list :source="sourcePage"></list>
+            </div>
+            <div class="sidebar-wrapper">
+                <sidebar></sidebar>
+            </div>
         </div>
-        <sidebar></sidebar>
     </div>
 </template>
 <script>
@@ -50,7 +53,7 @@ export default {
     methods: {
         //check if user browse on mobile
         checkDevice() {
-            if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+            if( /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
                 this.size = 0
             } else {
                 this.size = 1
@@ -71,26 +74,33 @@ export default {
 }
 .container {
     position: relative;
-    margin: 0 auto;
     width: 100%;
     max-width: 980px;
-    .left-column {
-        padding: 0 15px 15px;
-        background-color: #fff;
-        width: 650px;
-        position: absolute;
+    display: flex;
+    flex-direction: column;
+    .main-content {
+        display: flex;
+        justify-content: space-between;
         margin: 20px 0 40px;
-        border-top: 1px solid #00a1d6;
-        &:hover {
-            box-shadow: 1px 1px 2px #ccc;
+        .article-wrapper {
+            flex: 3;
+            background: #fff;
+            margin-top: 20px;
+            border-top: 1px solid #00a1d6;
+            padding: 25px 25px 0 25px;
+            &:hover {
+                box-shadow: 1px 1px 2px #ccc;
+            }
+            @media screen and (max-width: 960px) {
+                margin: 0 5px;
+            }
         }
-        @media screen and (max-width: 420px) {
-            position: relative;
-            width: 80%;
-            margin: 0 20px;
-        }  
-        .split-line {
-            margin: -5px 0 15px;
+        .sidebar-wrapper {
+            flex: 1;
+            margin-left: 20px;
+            @media screen and (max-width: 960px) {
+                display: none;
+            }
         }
     }
 }

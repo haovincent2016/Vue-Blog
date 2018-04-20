@@ -170,11 +170,13 @@ export default {
     },
     watch: {
         '$route.name': function(name) {
-            if(name === 'article') {
-                this.retrieveArticle()
-            } else {
-                this.scrolled = false
-            }
+            this.$nextTick(() => {
+                if(name === 'article') {
+                    this.retrieveArticle()
+                } else {
+                    this.scrolled = false
+                }
+            })
         }
     },
     methods: {

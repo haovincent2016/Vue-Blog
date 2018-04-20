@@ -293,7 +293,7 @@ export default {
                 this.contentHeight[index] = item.children[2].children[1].scrollHeight
             })
             this.contentHeight.forEach((item, index) => {
-                if(item > 136) {
+                if(item > 95) {
                     this.hasMore.push(true)
                 } else {
                     this.hasMore.push(false)

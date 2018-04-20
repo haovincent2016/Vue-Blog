@@ -1,9 +1,9 @@
 <template>
-    <div class="sidebar">
-	    <MiniSlider :content="content" :key="content.id"></MiniSlider>
-        <TagList></TagList>
-        <Ranking></Ranking>				
-    </div>
+<div class="sidebar">
+    <MiniSlider :content="content" :key="content.id"></MiniSlider>
+    <TagList></TagList>
+    <Ranking></Ranking>				
+</div>
 </template>
 
 <script>
@@ -36,12 +36,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.sidebar {
-    width: 280px;
-    margin: 0 auto;
-    float: right;
-    @media screen and (max-width: 960px) {
-        display: none;
-    }
-}
 </style>

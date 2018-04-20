@@ -3,11 +3,11 @@
     <!--primary comment options-->
     <div class="comment-wrap">
         <div class="tool-group">
-            <a class="" @click="toggleLike(primary, index)">
+            <a :class="{highlight: liked}" @click="toggleLike(primary)">
                 <i class="fa fa-thumbs-o-up"></i> 
                 <span>{{ primary.likes | like }}</span>
             </a>
-            <a v-if="isLogin" @click="showSub(primary, index)" class="">
+            <a v-if="isLogin" @click="showSub(primary)" class="">
                 <i class="fa fa-reply"></i> 
                 <span>Reply</span>
             </a>
@@ -23,14 +23,14 @@
     </div>
     <div class="sub-comment-list">
         <!--first 3 subcomments-->
-        <div v-for="(comment, index) in sub(primary)" :key="comment.id" class="sub-comment">
+        <div v-for="comment in sub(primary)" :key="comment.id" class="sub-comment">
             <p>
                 <a class="user-link" @click="userPage(comment, true)" target="_blank">{{ comment.post_by.name }}</a>
                 <span>reply to <a class="user-link" @click="userPage(comment, false)" target="_blank">{{ comment.reply_to.name }}</a> : {{ comment.content }}</span>
             </p> 
             <div class="sub-tool-group">
                 <span>{{ comment.post_date | moment }}</span> 
-                <a v-if="isLogin" @click="showSub(comment, index)" class="">
+                <a v-if="isLogin" @click="showSub(comment)" class="">
                     <i class="fa fa-reply"></i> 
                     <span>Reply</span>
                 </a>
@@ -46,14 +46,14 @@
             </div>
         </div>
         <!--the rest subcomments-->
-        <div v-show="viewmore === false" v-for="(more, index) in restsub(primary)" :key="more.id" class="sub-comment">
+        <div v-show="viewmore === false" v-for="more in restsub(primary)" :key="more.id" class="sub-comment">
             <p>
                 <a class="user-link" @click="userPage(comment, true)" target="_blank">{{ more.post_by.name }}</a>
                 <span>reply to <a class="user-link" @click="userPage(comment, false)" target="_blank">{{ more.reply_to.name }}</a> : {{ more.content }}</span>
             </p> 
             <div class="sub-tool-group">
                 <span>{{ more.post_date | moment }}</span> 
-                <a v-if="isLogin" @click="showSub(more, index+3)" class="">
+                <a v-if="isLogin" @click="showSub(more)" class="">
                     <i class="fa fa-reply"></i> 
                     <span>Reply</span>
                 </a>
@@ -107,8 +107,6 @@ export default {
             selectedSub: -1,
             subcomment: '',
             count: 0,
-
-            likestate: '',
             liked: false
         }
     },
@@ -139,6 +137,7 @@ export default {
         }
     },
     methods: {
+        //navigate user page
         userPage(comment, post) {
             if(post) {
                 let path = comment.post_by._id
@@ -148,11 +147,13 @@ export default {
                 this.$router.push({ path: `/userpage/${path}` })
             }
         },
+        //open login modal
         openLogin() {
             this.$store.dispatch('displayModal', { display: true, login: 'login' })
         },
-        async toggleLike(comment, index) {
-            if(this.likestate == index && this.liked == false) {
+        //like or unlike a comment
+        async toggleLike(comment) {
+            if(this.liked == false) {
                 try {
                     const addlike = await helper.addLike(comment._id)
                     comment.likes = addlike.data.likes
@@ -160,7 +161,7 @@ export default {
                 } catch(err) {
                     console.log(err.message)
                 } 
-            } else if(this.likestate == index && this.liked == true) {
+            } else {
                 try {
                     const cancellike = await helper.cancelLike(comment._id)
                     comment.likes = cancellike.data.likes
@@ -168,21 +169,14 @@ export default {
                 } catch(err) {
                     console.log(err.message)
                 }
-            } else {
-                this.likestate = index
-                try {
-                    const addlike = await helper.addLike(comment._id)
-                    comment.likes = addlike.data.likes
-                    this.liked = true
-                } catch(err) {
-                    console.log(err.message)
-                } 
-            }
+            } 
         },
+        //get first 3 subcomments of primary comment
         sub(comment) {
             this.subcomments = comment.subcomments
             return comment.subcomments.slice(0,3)
         },
+        //get rest subcomments of primary comment
         restsub(comment) {
             if(comment.subcomments.length > 3) {
                 this.isShown = true
@@ -191,11 +185,13 @@ export default {
                 this.isShown = false
             }
         },
-        showSub(comment, subindex) {
+        //show comment input when reply
+        showSub(comment) {
             this.current_primary = comment
             this.reply_to = comment.post_by
             this.showInput = true
         },
+        //close comment input
         cancelSub() {
             this.subcomment = ''
             this.showInput = false
@@ -262,13 +258,16 @@ export default {
                 color: #13b9ef;
             }
         }
+        .highlight {
+            color: #13b9ef;
+        }
     }
 }
 .sub-comment-list {
     overflow-y: auto;
     margin-top: 10px;
-    padding-left: 20px;
-    border-left: 2px solid #d9d9d9;
+    padding-left: 10px;
+    border-left: 1px solid #d9d9d9;
     .sub-comment {
         padding: 8px 0;
         border-bottom: 1px dashed #f0f0f0;
