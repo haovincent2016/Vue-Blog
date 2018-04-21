@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "dplayer": "^1.22.2",
     "element-ui": "^2.2.1",
     "highlight.js": "^9.12.0",
     "iscroll": "^5.2.0",
@@ -26,7 +27,6 @@
     "simplemde": "^1.11.2",
     "underscore": "^1.8.3",
     "vue": "^2.5.2",
-    "vue-dplayer": "0.0.9",
     "vue-image-crop-upload": "^2.2.3",
     "vue-lazyload": "^1.1.4",
     "vue-quill-editor": "^3.0.5",

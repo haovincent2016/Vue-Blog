@@ -37,6 +37,7 @@ const MyComments = r => require.ensure([], () => r(require('../components/user/U
 const MyActivities = r => require.ensure([], () => r(require('../components/user/UserActivities')), 'MyActivities')
 
 const SingleVideo = r => require.ensure([], () => r(require('../components/video/SingleVideo')), 'SingleVideo')
+const Test = r => require.ensure([], () => r(require('../components/video/Test')), 'Test')
 
 Vue.use(Router)
 

@@ -27,7 +27,7 @@
                 <div v-if="article.type == 'markdown' && selectedArticle == index" class="full" v-html="$options.filters.markdown(article.content)"></div>
                 <div v-if="article.type == 'richtext' && selectedArticle == index" class="full" v-html="article.content"></div>
             </div>
-            <div class="meta" :class="{fixed: selectedArticle == index}">
+            <div class="meta" :class="{fixed: selectedArticle == index && isMobile}">
                 <a class="collection-tag" target="_blank" @click="tagPage(article.tag._id)">{{ article.tag.title }}</a>
                 <span><i class="fa fa-eye"></i> {{ article.view }}</span> 
                 <span><i class="fa fa-commenting"></i> {{ article.comment }}</span>     
@@ -64,7 +64,7 @@
 </template>
 <script>
 import moment from 'moment'
-import removeMd from 'remove-markdown'
+import removeMd from '@/assets/js/index'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import { mapGetters } from 'vuex'
 import Pagination from '@/components/common/Pagination'
@@ -77,6 +77,7 @@ import marked from '@/helper/marked.js'
 export default {
     mounted() {
         const that = this
+        this.checkDevice()
         this.$store.watch(() => { return that.$store.getters.getSearch}, () => {
             that.searchArticles()
             that.getSearchPages()
@@ -133,7 +134,8 @@ export default {
             hasMore: [],
             showMore: [],
             locked: false,
-            prevIndex: -1
+            prevIndex: -1,
+            isMobile: false
         }
     },
     props: [
@@ -176,7 +178,13 @@ export default {
         }
     },
     methods: {
-        trackScroll() {
+        //check if user browse on mobile or iPad
+        checkDevice() {
+            if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+                this.isMobile = true
+            } else {
+                this.isMobile = false
+            }
         },
         //prevent 2 article showFull at same time.
         showFull(index) {
@@ -299,8 +307,6 @@ export default {
                     this.hasMore.push(false)
                 }
             })
-            //console.log(this.contentHeight)
-            this.trackScroll()
         },
         async getArticles() {
             try {
@@ -308,6 +314,13 @@ export default {
                 this.articles = res.data
                 this.loading = false
             } catch(err) {
+                this.loading = false
+                this.$notify({
+                    title: 'Warning',
+                    type: 'warning',
+                    message: 'please check server status',
+                    position: 'top-left'
+                })
                 console.log(err.message)
             }
         },
@@ -320,6 +333,13 @@ export default {
                 }
                 this.loading = false
             } catch(err) {
+                this.loading = false
+                this.$notify({
+                    title: 'Warning',
+                    type: 'warning',
+                    message: 'please check server status',
+                    position: 'top-left'
+                })
                 console.log(err.message)
             }
         },
@@ -332,6 +352,13 @@ export default {
                 }
                 this.loading = false
             } catch(err) {
+                this.loading = false
+                this.$notify({
+                    title: 'Warning',
+                    type: 'warning',
+                    message: 'please check server status',
+                    position: 'top-left'
+                })
                 console.log(err.message)
             }
         },
@@ -356,6 +383,13 @@ export default {
                 }
                 this.loading = false
             } catch(err) {
+                this.loading = false
+                this.$notify({
+                    title: 'Warning',
+                    type: 'warning',
+                    message: 'please check server status',
+                    position: 'top-left'
+                })
                 console.log(err.message)
             }
         },

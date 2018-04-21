@@ -87,7 +87,8 @@ export default {
             background: #fff;
             margin-top: 20px;
             border-top: 1px solid #00a1d6;
-            padding: 25px 25px 0 25px;
+            padding: 25px 25px 20px 25px;
+            display: table;
             &:hover {
                 box-shadow: 1px 1px 2px #ccc;
             }

@@ -96,7 +96,14 @@ export default {
                 }
                 this.loading = false
             } catch(err) {
-                console.log('error occurs when retrieving tags')
+                this.loading = false
+                this.$notify({
+                    title: 'Warning',
+                    type: 'warning',
+                    message: 'please check server status',
+                    position: 'top-left'
+                })
+                console.log(error.message)
             }
         },
         checkState(tags, usertags) {
@@ -142,7 +149,7 @@ export default {
                         })
                     }
                 } catch(err) {
-                    console.log('error occurs')
+                    console.log(err.message)
                 }
             } else {
                 this.$notify({
@@ -174,7 +181,7 @@ export default {
                     })
                 }
             } catch(err) {
-                console.log('error occurs')
+                console.log(err.message)
             }
         },
         tagDetail(tag) {
@@ -197,6 +204,8 @@ export default {
     height: 334px;
 	background: #fff;
     margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
     &:hover {
         box-shadow: 1px 1px 2px #ccc;
     }
@@ -222,15 +231,18 @@ export default {
     }
     .tag-wrapper {
         margin-top: 5px;
-        text-align: center;
         ul {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             padding: 7px 0 28px 0;
+            max-height: 287px;
+            overflow: hidden;
             li {
                 padding: 4px;
                 margin: 2px;
                 border-radius: 3px;
                 border: 1px solid #f7f7f7;
-                display: inline-block;
                 a {
                     height: 48px;
                     vertical-align: middle;

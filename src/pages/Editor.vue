@@ -116,6 +116,9 @@ import { getTags, writeArticle }from '@/helper/articleHelper.js'
 import avatarUpload from 'vue-image-crop-upload'
 import { findWhere } from 'underscore'
 import css from 'simplemde/dist/simplemde.min.css'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
 
 let simplemde
 export default {
@@ -344,6 +347,7 @@ export default {
 			height: 100%;
 			width: 100%;
 			cursor: pointer;
+			box-shadow: 0px 0px 2px #ccc;
 		}
 		.display {
 			opacity: 0;
@@ -360,7 +364,13 @@ export default {
 			border: 0;
 			font-size: 25px;
 			font-weight: 500;
+			padding-left: 8px;
 			outline: none;
+			&:focus {
+				box-shadow: 0px 0px 2px #ccc;
+				border-radius: 8px;
+				background: #fff;
+			}
 		}
 	}
 	.article-editor {
@@ -368,9 +378,9 @@ export default {
 		margin-bottom: 50px;
 	}
 	.richtext-editor {
+		box-shadow: 0px 0px 2px #ccc;
 		margin-top: 15px;
 		margin-bottom: 50px;
-		background-color: white;
 		opacity: 0.9;
 	}
 }

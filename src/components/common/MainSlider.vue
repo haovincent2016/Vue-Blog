@@ -77,6 +77,8 @@ export default {
 				this.currentDot -= 1
 			} else {
 				this.current = last
+				this.currentHover = last
+				this.currentDot = last
 			}
 		},
 		slideRight() {

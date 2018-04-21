@@ -11,9 +11,9 @@
       </div>
       <ul class="list-content">
         <li class="list-item" v-for="(danmaku, index) in danmakus" :key="index">
-          <span class="item-time">{{ danmaku.time | time }}</span>
-          <span class="item-content">{{ danmaku.text }}</span>
-          <span class="item-post">{{ danmaku.date | moment }}</span>
+          <span class="item-time">{{ danmaku[0] | time }}</span>
+          <span class="item-content">{{ danmaku[4] }}</span>
+          <span class="item-post">{{ danmaku[5] | moment }}</span>
         </li>
       </ul>
     </div>
@@ -38,6 +38,7 @@ export default {
     this.checkVideo()
   },
   mounted() {
+    //bugs: danmaku not show after refresh or move back
     dp = new DPlayer({
       container: document.getElementById('dplayer'),
       logo: '/static/xiaomai.png',
@@ -182,7 +183,10 @@ export default {
       this.$http.get('/d/v2/', { params: { id: this.id }}).then(res => { 
         if(res.data.code == 0) {
           this.danmakus = res.data.danmaku
+          console.log(this.danmakus)
         }
+      }).catch(err => {
+        console.log('error occurs when getting danmakus')
       })
     },
     sendDanmaku() {
@@ -217,6 +221,8 @@ export default {
               })
             }
             this.content = ''
+          }).catch(err => {
+            console.log('error occurs when getting danmakus')
           })
         } else {
           this.$notify({

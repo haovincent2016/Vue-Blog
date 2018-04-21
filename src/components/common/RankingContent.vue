@@ -62,7 +62,7 @@ export default {
         return {
             currentIndex: 1,
             onHover: false,
-            topMargin: 1022,
+            topMargin: 1038,
             articles: [],
             others: [],
             preview: {}
@@ -85,7 +85,7 @@ export default {
     methods: {
         setIndex(index) {
             this.currentIndex = index
-            this.topMargin = index * 70 + 1028
+            this.topMargin = index * 75 + 1038
             this.onHover = true
             if(index < 3) {
                 this.preview = this.articles[index]
