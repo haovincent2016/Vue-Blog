@@ -318,7 +318,7 @@ export default {
                 this.$notify({
                     title: 'Warning',
                     type: 'warning',
-                    message: 'please check server status',
+                    message: 'No article found, please check server status',
                     position: 'top-left'
                 })
                 console.log(err.message)
@@ -337,7 +337,7 @@ export default {
                 this.$notify({
                     title: 'Warning',
                     type: 'warning',
-                    message: 'please check server status',
+                    message: 'No article found, please check server status',
                     position: 'top-left'
                 })
                 console.log(err.message)
@@ -356,7 +356,7 @@ export default {
                 this.$notify({
                     title: 'Warning',
                     type: 'warning',
-                    message: 'please check server status',
+                    message: 'No article found, please check server status',
                     position: 'top-left'
                 })
                 console.log(err.message)
@@ -387,7 +387,7 @@ export default {
                 this.$notify({
                     title: 'Warning',
                     type: 'warning',
-                    message: 'please check server status',
+                    message: 'No article found, please check server status',
                     position: 'top-left'
                 })
                 console.log(err.message)

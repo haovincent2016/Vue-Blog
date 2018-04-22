@@ -100,7 +100,7 @@ export default {
                 this.$notify({
                     title: 'Warning',
                     type: 'warning',
-                    message: 'please check server status',
+                    message: 'No tag found, please check server status',
                     position: 'top-left'
                 })
                 console.log(error.message)

@@ -68,7 +68,7 @@ import * as helper from '@/helper/collectionHelper'
 
 export default {
     mounted() {
-        if(this.isLogin) {
+        if(this.isLogin && this.$route.name == 'collection') {
             this.getCollections()
         }
     },

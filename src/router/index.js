@@ -12,6 +12,7 @@ const Signup = r => require.ensure([], () => r(require('../pages/Signup')), 'Sig
 const Login = r => require.ensure([], () => r(require('../pages/Login')), 'Login')
 const Admin = r => require.ensure([], () => r(require('../pages/Admin')), 'Admin')
 const Video = r => require.ensure([], () => r(require('../pages/Video')), 'Video')
+const NotFound = r => require.ensure([], () => r(require('../pages/NotFound')), 'NotFound')
 
 const AdminHome = r => require.ensure([], () => r(require('../admin/Home')), 'AdminHome')
 const ArticleManage = r => require.ensure([], () => r(require('../admin/Article')), 'ArticleManage')
@@ -37,7 +38,6 @@ const MyComments = r => require.ensure([], () => r(require('../components/user/U
 const MyActivities = r => require.ensure([], () => r(require('../components/user/UserActivities')), 'MyActivities')
 
 const SingleVideo = r => require.ensure([], () => r(require('../components/video/SingleVideo')), 'SingleVideo')
-const Test = r => require.ensure([], () => r(require('../components/video/Test')), 'Test')
 
 Vue.use(Router)
 
@@ -199,6 +199,10 @@ export default new Router({
                 path: 'managecomments',
                 component: CommentManage   
             } ]
+        },
+        {
+            path: '*',
+            component: NotFound
         } 
     ]
 })

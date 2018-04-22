@@ -1,32 +1,33 @@
 <template>
 <div class="header-wrapper">
-    <div class="header-container">
+    <nav class="nav-container">
         <div v-if="!scrolled || scrolledDirection === 'up'" class="main-header">
             <a href="/" class="logo">
                 <img src="/static/xiaomai.png" alt="blog" class="logo-img">
             </a>
-            <nav role="navigation" class="main-nav">
-                <ul class="nav-list">
-                    <div class="main-nav-list" @click="isShown=!isShown">
-                        <!--mobile header-->
+            <span class="menu">
+                <ul class="menu-list">
+                    <li class="menu-item" @click="isShown=!isShown">
+                        <!-- mobile header -->
                         <div class="phone-show">
                             <div class="title">Menu</div>
                             <div v-show="isShown === false" class="fa fa-caret-down fa-leftmargin"></div>
                             <div v-show="isShown === true" class="fa fa-caret-up fa-leftmargin"></div>
                         </div>
+                        <!-- computer header -->
                         <div class="computer-hide" :class="{ menushow: isShown}">
-                            <li class="nav-item">
+                            <li class="pc-item">
                                 <router-link :to="{name: 'home'}">Home</router-link>
                             </li>
-                            <li class="nav-item">
+                            <li class="pc-item">
                                 <router-link :to="{name: 'video'}">Video</router-link>
                             </li>
-                            <li class="nav-item">
+                            <li class="pc-item">
                                 <a >Musics</a>
                             </li>
                         </div>
-                    </div>
-                    <!--search-bar-->
+                    </li>
+                    <!-- search input section -->
                     <li class="nav-item search" @mouseover="showSearch = true" @mouseleave="showSearch = false">
                         <div :class="{ bgactive: focused }" class="search-form">
                             <input
@@ -58,16 +59,17 @@
                             </ul>
                         </div>
                     </li>
+                    <!-- write button -->
                     <li class="nav-item submit">
                         <router-link :to="{ name: 'editor' }"><i class="fa fa-pencil-square-o"></i><span>Write</span></router-link>
                     </li>
                     <!--before login-->
                     <li v-if="loginState === false" class="nav-item auth">
-                        <router-link :to="{ name: 'signin', query: { redirect: this.$route.path } }"><span class="login">Login</span></router-link>
-                        <router-link :to="{ name: 'signup', query: { redirect: this.$route.path } }"><span class="register">Register</span></router-link>
+                        <router-link :to="{ name: 'signin', query: { redirect: this.$route.path } }"><span class="login">Login </span></router-link>or
+                        <router-link :to="{ name: 'signup', query: { redirect: this.$route.path } }"><span class="register"> Register</span></router-link>
                     </li>
                     <!--after login-->
-                    <li v-if="loginState === true" class="nav-item" @mouseover="isOpen=true" @mouseleave="isOpen=false">
+                    <li v-if="loginState === true" class="nav-item authed" @mouseover="isOpen=true" @mouseleave="isOpen=false">
                         <div class="user">
                             <div>
                                 <a class="avatar"><img :src="userpic" alt="120"></a>
@@ -92,7 +94,7 @@
                         </div>
                     </li>
                 </ul>
-            </nav>
+            </span>
         </div>
         <div v-if="scrolled && scrolledDirection === 'down'" class="article-header">
             <h3 class="article-title">{{ article.title }}</h3>
@@ -102,7 +104,7 @@
                 <button class="comment" v-scroll-to="'#commentarea'">Comment</button>
             </div>
         </div>
-    </div>
+    </nav>
     <!--collection box-->
     <box :display="isDisplay"
         :article="article_id" 
@@ -270,7 +272,7 @@ export default {
 .dropdown-menu {
     position: absolute;
     top: 100%;
-    right: 0;
+    right: 16%;
     z-index: 10;
     float: left;
     min-width: 180px;
@@ -363,8 +365,7 @@ export default {
 
 .header-wrapper {
     height: 60px;
-    position: relative;
-    .header-container {
+    .nav-container {
         position: fixed;
         top: 0;
         left: 0;
@@ -378,10 +379,9 @@ export default {
             max-width: 980px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            height: 100%;
-            position: relative;
+            justify-content: space-around;
             margin: 0 auto;
+            height: 100%;
             width: 100%;
             @media screen and (max-width: 420px) {
                 width: 96%;
@@ -397,13 +397,120 @@ export default {
                     margin-right: 0;
                 }
             }
+            .menu {
+                height: 100%;
+                width: 100%;
+                .menu-list {
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-around;
+                    .menu-item {
+                        @media screen and (max-width: 420px) {
+                            width: 100%;
+                        }
+                        .phone-show {
+                            display: none;
+                            @media screen and (max-width: 420px) {
+                                display: flex;
+                                cursor: pointer;
+                                height: 5rem;
+                                color: #909090;
+                                font-size: 1.3rem;
+                                padding: 0 0.5rem;
+                                align-items: center;
+                            }
+                        }
+                        .computer-hide {
+                            display: flex;
+                            @media screen and (max-width: 420px) {
+                                background-color: #fff;
+                                box-shadow: 0 1px 2px 0 rgba(0,0,0,.1);
+                                border: 1px solid hsla(217,5%,71%,.45);
+                                border-radius: 4px;
+                                font-size: 1.1rem;
+                                position: absolute;
+                                display: none;
+                            }
+                            .pc-item {
+                                font-size: 1.4rem;
+                                margin: 0 .5rem;
+                                text-align: center;
+                                @media screen and (max-width: 420px) {
+                                    margin: .8rem .5rem;
+                                }
+                            }
+                        }
+                        .menushow {
+                            @media screen and (max-width: 420px) {
+                                display: block;
+                            }
+                        }
+                    }
+                    .nav-item {
+                        color: #71777c;
+                        cursor: pointer;
+                        a:hover {
+                            color: #00a1d6;
+                        }
+                        .search-form {
+                            border: 2px solid #ccd0d7;
+                            border-radius: 12px;
+                            background-color: #f7f7f7;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            @media screen and (max-width: 420px) {
+                                display: none; 
+                            }
+                            img {
+                                border-style: none;
+                            }
+                            .search-input {
+                                width: 12rem;
+                                border: none;
+                                padding: .6rem 1rem;
+                                box-shadow: none;
+                                outline: none;
+                                font-size: 1.2rem;
+                                color: #666;
+                                background-color: transparent;
+                            }
+                            .search-icon {
+                                margin: 0 .5rem;
+                                cursor: pointer;
+                                position: relative;
+                            }
+                        }
+                        
+                    }
+                    .search {
+                        cursor: auto;
+                    }
+                    
+                    .submit {
+                        color: #00a1d6;
+                        font-size: 1.4rem;
+                        padding-left: 20rem;
+                        @media screen and (max-width: 420px) {
+                             padding-left: 0;
+                             width: 14rem; 
+                        }
+                    }
+                    .auth {
+                        a {
+                            color: #00a1d6;
+                            font-size: 1.4rem;
+                        }
+                    }
+                }
+            }
         }
         .article-header {
             max-width: 640px;
             display: flex;
             align-items: center;
             height: 100%;
-            position: relative;
             margin: 0 auto;
             width: 100%;
             padding-left: 2%;
@@ -456,136 +563,11 @@ export default {
         }
     }
 }
-.main-nav {
-    height: 100%;
-    flex: auto;
-    .nav-list {
-        padding: 0;
-        display: flex;
-        -webkit-box-align: center;
-        align-items: center;
-        height: 100%;
-        margin: 0;
-        justify-content: flex-end;
-        position: relative;
-        .main-nav-list {
-            display: flex;
-            @media screen and (max-width: 420px) {
-                display: block;
-                position: absolute;
-                left: 0;
-                top: 0;
-                background-color: #fff;
-            }
-        }
-        .nav-item {
-            display: flex;
-            -webkit-box-align: center;
-            color: #71777c;
-            padding: 0 1.1rem;
-            font-size: 1.33rem;
-            align-items: center;
-            height: 100%;
-            margin: 0;
-            -webkit-box-pack: center;
-            justify-content: center;
-            cursor: pointer;
-            
-        }
-        .nav-item > a:hover {
-             color: #00a1d6;
-        }
-        .search {
-            flex: 1 1 auto;
-            justify-content: flex-end;
-            cursor: auto;
-        }
-        .submit {
-            color: #00a1d6;
-            position: relative;
-        }
-        .auth {
-            color: #00a1d6;
-            .login:after {
-                content: "\B7";
-                margin: 0 .4rem;
-            }
-        }
-    }
-}
-.phone-show {
-    display: none;
-    @media screen and (max-width: 420px) {
-        cursor: pointer;
-        height: 5rem;
-        display: flex;
-        align-items: center;
-        color: #909090;
-        font-size: 1.3rem;
-        justify-content: center;
-        padding: 0 0.5rem;
-    }
-}
-.computer-hide {
-    display: flex;
-    @media screen and (max-width: 420px) {
-        background-color: #fff;
-        box-shadow: 0 1px 2px 0 rgba(0,0,0,.1);
-        border: 1px solid hsla(217,5%,71%,.45);
-        border-radius: 4px;
-        font-size: 1.1rem;
-        display: none;
-    }
-}
-@media screen and (max-width: 420px) {
-    .menushow {
-        display: block;
-    }
-    .nav-item {
-        height: 3.5rem !important;
-    }
-}
-.search-form {
-    border: 2px solid #ccd0d7;
-    border-radius: 12px;
-    background-color: #f7f7f7;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    @media screen and (max-width: 420px) {
-       display: none; 
-    }
-    img {
-        border-style: none;
-    }
-    .search-input {
-        width: 12rem;
-        border: none;
-        padding: .6rem 1rem;
-        box-shadow: none;
-        outline: none;
-        font-size: 1.2rem;
-        color: #666;
-        background-color: transparent;
-    }
-    .search-icon {
-        margin: 0 .5rem;
-        cursor: pointer;
-        position: relative;
-    }
-}
-
 a {
     text-decoration: none;
     cursor: pointer;
     color: #909090;
     background-color: transparent;
-}
-ul {
-    padding: 0;
-}
-li {
-    list-style: none;
 }
 .bgactive {
     background-color: #fff;
