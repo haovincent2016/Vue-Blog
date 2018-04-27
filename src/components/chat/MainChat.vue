@@ -77,7 +77,7 @@ export default {
             this.tabIndex = index
         },
         gotoChat(otherId) {
-            this.$router.push({ path: `/dashboard/userchat/${otherId}`})
+            this.$router.push({ path: `/zdashboard/userchat/${otherId}`})
         },
         getSuggestions() {
             const that = this

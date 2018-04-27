@@ -239,7 +239,7 @@ export default {
                 try {
                     const res = await helper.deleteCollection(this.$route.params.id)
                     if(res.data.success) {
-                        this.$router.push('/mycollect')
+                        this.$router.push('/zcollect')
                         this.$notify({
                             title: 'Success',
                             type: 'success',

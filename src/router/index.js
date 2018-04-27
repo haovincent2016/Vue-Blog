@@ -53,12 +53,12 @@ export default new Router({
             component: Home
         },
         {
-            path: '/video',
+            path: '/zvideo',
             name: 'video',
             component: Video
         },
         {
-            path: '/video/:id',
+            path: '/zvideo/:id',
             name: 'single',
             component: SingleVideo
         },
@@ -85,7 +85,7 @@ export default new Router({
             component: UserPage
         },
         {
-            path: '/dashboard',
+            path: '/zdashboard',
             component: Dashboard,
             meta: {
                 requireAuth: true
@@ -146,12 +146,12 @@ export default new Router({
             component: Article
         },
         {
-            path: '/mycollect',
+            path: '/zcollect',
             name: 'collection',
             component: Collection
         },
         {
-            path: '/mycollect/:id',
+            path: '/zcollect/:id',
             component: CollectionDetail
         },
         {
@@ -165,12 +165,12 @@ export default new Router({
         },
         /* admin route */
         {
-            path: '/admin',
+            path: '/zadmin',
             name: 'login',
             component: Login
         },
         { 
-            path: '/adminpanel',
+            path: '/zadminpanel',
             component: Admin,
             meta: {
                 requireAdmin: true

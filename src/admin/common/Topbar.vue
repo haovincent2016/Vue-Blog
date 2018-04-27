@@ -35,7 +35,7 @@ export default {
                 this.changeAdmin(false)
                 this.$router.push({ name: 'login' })
             } else {
-                this.$router.push({ path: '/adminpanel' })
+                this.$router.push({ path: '/zadminpanel' })
             } 
         }
     }

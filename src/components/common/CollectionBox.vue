@@ -131,7 +131,7 @@ export default {
         },
         gotoCollection(collection) {
             this.collection_id = collection._id
-            this.$router.push('/mycollect/' + this.collection_id)
+            this.$router.push('/zcollect/' + this.collection_id)
         },
         /*add article to collection*/
         async addtoCollection(collection) {

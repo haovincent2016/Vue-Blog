@@ -170,7 +170,7 @@ export default {
     },
     methods: {
         goBack() {
-            this.$router.push({ path: '/dashboard/chats'})
+            this.$router.push({ path: '/zdashboard/chats'})
         },
         goTop() {
             $(".message-body").scrollTop(0)
@@ -341,7 +341,7 @@ export default {
             this.tabIndex = index
         },
         gotoChat(otherId) {
-            this.$router.push({ path: `/dashboard/userchat/${otherId}`})
+            this.$router.push({ path: `/zdashboard/userchat/${otherId}`})
         }
     },
     components: {

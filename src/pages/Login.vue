@@ -81,7 +81,7 @@ export default {
                     })
                     //always set the newer token
                     localStorage.setItem('admintoken', res.data.admintoken)
-                    this.$router.push({ path: '/adminpanel' })
+                    this.$router.push({ path: '/zadminpanel' })
                     this.changeAdmin(true)
                 } else {
                     this.$notify({

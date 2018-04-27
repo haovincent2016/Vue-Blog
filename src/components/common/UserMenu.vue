@@ -17,7 +17,7 @@ export default {
             submenu: [
                 {
                     title: 'Articles',
-                    path: '/dashboard/articles',
+                    path: '/zdashboard/articles',
                     icon: 'fa-file-text'
                 },
                 /*{
@@ -27,12 +27,12 @@ export default {
                 },*/
                 {
                     title: 'Comments',
-                    path: '/dashboard/comments',
+                    path: '/zdashboard/comments',
                     icon: 'fa-comments'
                 },
                 {
                     title: 'Chat',
-                    path: '/dashboard/chats',
+                    path: '/zdashboard/chats',
                     icon: 'fa-whatsapp'
                 }
             ]

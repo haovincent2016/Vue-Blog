@@ -68,7 +68,7 @@ export default {
         },
         openVideo(index) {
             let i = index + 1
-            this.$router.push({ path: `video/${i}` })
+            this.$router.push({ path: `zvideo/${i}` })
         },
         stop () {
             this.player.stopVideo()
