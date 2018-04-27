@@ -3,9 +3,7 @@
     <ul class="user-menu">
         <li v-for="menu in submenu" :key="menu.id">
             <router-link :to="{ path: menu.path }">
-                <a >
-                    <i class="fa" :class="menu.icon"></i> {{ menu.title }}
-                </a>
+                <i class="fa" :class="menu.icon"></i> {{ menu.title }}
             </router-link>
         </li>
     </ul>

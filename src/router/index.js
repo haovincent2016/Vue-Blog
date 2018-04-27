@@ -42,14 +42,9 @@ const SingleVideo = r => require.ensure([], () => r(require('../components/video
 Vue.use(Router)
 
 export default new Router({
-    mode: 'hash',
+    mode: 'history',
     scrollBehavior: function (to, from, savedPosition) {
-        //return savedPosition || { x: 0, y: 0 }
-        if (to.hash) {
-            return {selector: to.hash}
-        } else {
-            return { x: 0, y: 0 }
-        }
+        return savedPosition || { x: 0, y: 0 }
     },
     routes: [
         { 

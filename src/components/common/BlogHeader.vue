@@ -71,10 +71,7 @@
                     <!--after login-->
                     <li v-if="loginState === true" class="nav-item authed" @mouseover="isOpen=true" @mouseleave="isOpen=false">
                         <div class="user">
-                            <div>
-                                <a class="avatar"><img :src="userpic" alt="120"></a>
-                            </div>
-                            
+                            <div class="avatar"><img :src="userpic" alt="120"></div>
                             <ul class="dropdown-menu" v-show="isOpen === true">
                                 <li>
                                     <router-link :to="{ name: 'dashboard' }"><i class="fa fa-user"></i><span>My Homepage</span></router-link>      
@@ -257,9 +254,10 @@ export default {
 <style lang="scss" scoped>
 /*user menu*/
 .user {
-    margin-top: 5px;
+    position: relative;
+    padding-top: 5px;
     .avatar {
-        margin: 6px;
+        padding: 6px;
         img {
             width: 40px;
             height: 40px;
@@ -272,9 +270,8 @@ export default {
 .dropdown-menu {
     position: absolute;
     top: 100%;
-    right: 16%;
+    right: 0;
     z-index: 10;
-    float: left;
     min-width: 180px;
     padding: 5px 0;
     margin: 2px 0 0;

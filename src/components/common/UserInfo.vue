@@ -12,26 +12,20 @@
         <ul>
             <li>
                 <div class="meta-block">
-                    <a href="">
-                        <p>{{ followers }}</p>
-                        Followers <!--<i class="fa fa-angle-right"></i>-->
-                    </a>        
+                    <p>{{ followers }}</p>
+                    Followers    
                 </div>
             </li>
             <li>
                 <div class="meta-block">
-                    <a href="">
-                        <p>{{ subscribed }}</p>
-                        Subscribers <!--<i class="fa fa-angle-right"></i>-->
-                    </a>        
+                    <p>{{ subscribed }}</p>
+                    Subscribers       
                 </div>
             </li>
             <li>
                 <div class="meta-block">
-                    <a href="">
-                        <p>{{ tags }}</p>
-                        Tags <!--<i class="fa fa-angle-right"></i>-->
-                    </a>            
+                    <p>{{ tags }}</p>
+                    Tags            
                 </div>
             </li>
         </ul>

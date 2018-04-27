@@ -38,7 +38,6 @@ export default {
     this.checkVideo()
   },
   mounted() {
-    //bugs: danmaku not show after refresh or move back
     dp = new DPlayer({
       container: document.getElementById('dplayer'),
       logo: '/static/xiaomai.png',
